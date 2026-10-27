@@ -35,7 +35,6 @@ require("scripts/objects/quatron-reactor.lua")
 require("scripts/objects/deep-storage.lua")
 require("scripts/objects/deep-tank.lua")
 require("scripts/objects/MFPlayer.lua")
-require("scripts/objects/resource-catcher.lua")
 require("scripts/objects/energy-dispenser.lua")
 
 -- When the mod init --
