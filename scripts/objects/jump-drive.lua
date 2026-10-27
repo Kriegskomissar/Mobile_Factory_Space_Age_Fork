@@ -48,56 +48,87 @@ function JD:valid()
 	return true
 end
 
--- Update --
+-- Обновление Jump Drive
 function JD:update()
 
-	-- Set the lastUpdate variable --
-	self.lastUpdate = game.tick
-	
-	-- Check the Validity --
-	if self.ent == nil or self.ent.valid == false then
-		return
+    -- Запоминаем последний тик обновления.
+    self.lastUpdate = game.tick
+
+    -- Проверяем, существует ли физическая сущность Jump Drive.
+    if self.ent == nil or self.ent.valid == false then
+        return
     end
 
-    -- Set the Entity Energy --
-    self.ent.energy = math.min(self.ent.prototype.electric_energy_source_prototype.buffer_capacity, self.charge / self.maxCharge * 100)
+    -- ============================================================
+    -- ВРЕМЕННАЯ ЗАГЛУШКА СИСТЕМЫ ЗАРЯДА
+    -- ============================================================
+    --
+    -- Раньше Jump Drive заряжался от Internal Energy.
+    -- Мы пока отключаем эту зависимость.
+    --
+    -- TODO:
+    -- Здесь позже подключить новую систему питания Jump Drive.
+    -- Она должна изменять self.charge и self.maxCharge.
+    --
+    -- Пока Jump Drive считается полностью заряженным.
 
-    -- Update the Charge Sprite --
-	local spriteNumber = math.ceil(self.ent.energy/self.ent.prototype.electric_energy_source_prototype.buffer_capacity*16)
-	if (self.chargeSprite) then
-		self.chargeSprite.destroy()
-	end
-	if (self.chargeLight) then
-		self.chargeLight.destroy()
-	end
+    self.maxCharge = _mfMaxJumpCharge
+    self.charge = self.maxCharge
+    self.chargeRate = 0
+
+
+    -- ============================================================
+    -- ИНДИКАТОР ЗАРЯДА
+    -- ============================================================
+    --
+    -- Сам визуальный индикатор оставляем.
+    -- Он теперь просто показывает, что Jump Drive полностью заряжен.
+
+    self.ent.energy = math.min(
+        self.ent.prototype.electric_energy_source_prototype.buffer_capacity,
+        self.charge / self.maxCharge * 100
+    )
+
+    local spriteNumber = math.ceil(
+        self.ent.energy /
+        self.ent.prototype.electric_energy_source_prototype.buffer_capacity * 16
+    )
+
+    if self.chargeSprite then
+        self.chargeSprite.destroy()
+    end
+
+    if self.chargeLight then
+        self.chargeLight.destroy()
+    end
 
     if spriteNumber ~= 0 then
-		if (self.sprite) then
-			self.sprite.destroy()
-		end
-		self.sprite = rendering.draw_sprite{sprite="CubeChargeSprite" .. spriteNumber, x_scale=1/2.25, y_scale=1/2.25, target=self.ent, surface=self.ent.surface, render_layer=130}
-	end
+        if self.sprite then
+            self.sprite.destroy()
+        end
 
-	-- Check the jumpChargerTable --
-	for k, jumpCharger in pairs(self.jumpChargerTable) do
-		if valid(jumpCharger) == false then
-			self.jumpChargerTable[k] = nil
-		end
-	end
+        self.sprite = rendering.draw_sprite{
+            sprite = "CubeChargeSprite" .. spriteNumber,
+            x_scale = 1 / 2.25,
+            y_scale = 1 / 2.25,
+            target = self.ent,
+            surface = self.ent.surface,
+            render_layer = 130
+        }
+    end
 
-	-- Calculate the Capacity --
-	self.maxCharge = _mfMaxJumpCharge + (table_size(self.jumpChargerTable)*_chargeAddedPerJumpCharger)
 
-	-- Calculate the Charge rate --
-	self.chargeRate = 1 + (table_size(self.jumpChargerTable)*_chargeRateAddedPerJumpCharger)
-
-	-- Update the Jump Drives --
-	if self.charge < self.maxCharge and EI.energy(self.MF.internalEnergyObj) > (_mfJumpEnergyDrain * self.chargeRate) then
-		self.charge = self.charge + self.chargeRate
-		EI.removeEnergy(self.MF.internalEnergyObj, _mfJumpEnergyDrain * self.chargeRate)
-		self.charge = math.min(self.charge, self.maxCharge)
-	end
-
+    -- ============================================================
+    -- JUMP CHARGER
+    -- ============================================================
+    --
+    -- Старую систему Jump Charger пока отключаем.
+    --
+    -- TODO:
+    -- Если Jump Charger будет возвращён в новой версии,
+    -- здесь снова учитывать установленные зарядные устройства.
+    --
+    -- Пока они не влияют ни на заряд, ни на скорость зарядки.
 
 end
  
@@ -165,17 +196,37 @@ function JD:removeLocation(name)
 	self.locationTable[name] = nil
 end
 
--- Check if the Mobile Factory can Teleport to the Location --
+-- Проверяет, может ли Jump Drive выполнить прыжок.
 function JD:canTP(location)
-	-- Calculate the Distance --
-	local distance = Util.distance(self.MF.ent.position, {location.posX,location.posY})
-	distance = math.ceil(distance)
-	-- Check the Jump Charge --
-	if distance > self.charge then return false end
-	-- Check the World --
-	if self.MF.ent.surface ~= location.surface and EI.energy(self.MF.internalQuatronObj) < 1000 then return false end
-	-- All is OK --
-	return true
+
+    -- ============================================================
+    -- ПРОВЕРКА ДАЛЬНОСТИ
+    -- ============================================================
+    --
+    -- Раньше расстояние сравнивалось с текущим зарядом.
+    -- Заряд пока является заглушкой и всегда максимальный.
+    --
+    -- TODO:
+    -- Вернуть полноценный расчёт стоимости прыжка.
+    -- Например:
+    -- стоимость = расстояние * коэффициент
+    --
+    -- Пока любой прыжок разрешён.
+
+    -- ============================================================
+    -- ПЕРЕХОД МЕЖДУ SURFACE
+    -- ============================================================
+    --
+    -- Раньше для перехода между поверхностями требовалось
+    -- 1000 единиц Internal Quatron.
+    --
+    -- TODO:
+    -- Позже сюда добавить новое правило для межповерхностных
+    -- прыжков, если оно вообще понадобится.
+    --
+    -- Пока Quatron для Jump Drive НЕ используется.
+
+    return true
 end
 
 -- Start the Jump --
