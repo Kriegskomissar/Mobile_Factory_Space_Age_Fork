@@ -225,6 +225,8 @@ function createNewMF(name, color, size, order, icon)
     nMFE.turret_animation.layers[3].shift = util.by_pixel(51.25, 6.5 * size)
     nMFE.collision_box = {{-1.5 * size, -2.5 * size}, {1.0 * size, 2.5 * size}}
     nMFE.selection_box = {{-2 * size, -3.5 * size}, {1.6 * size, 2.5 * size}}
+    nMFE.max_health = mf.max_health * size
+    nMFE.weight = mf.weight * size
     data:extend{nMFE}
 
     local nMFI = table.deepcopy(data.raw["item-with-entity-data"].SmallFactory)
