@@ -1,0 +1,100 @@
+------------------------- BLUE BEAM 2 ---------------------------
+
+beam_tint = {r=52, g=152, b=219}
+
+local beam1 = {}
+beam1.type = "beam"
+beam1.name = "BlueBeam2"
+beam1.flags = {"not-on-map"}
+beam1.width = 0.5
+beam1.damage_interval = 20
+beam1.random_target_offset = true
+beam1.action_triggered_automatically = false
+beam1.action = nil
+beam1.graphics_set = {
+  beam = {
+      head =
+      {
+        filename = "__base__/graphics/entity/laser-turret/laser-body-light.png",
+        line_length = 8,
+        width = 64,
+        height = 12,
+        frame_count = 8,
+        scale = 0.5,
+        animation_speed = 0.5,
+		tint = beam_tint
+      },
+      tail =
+      {
+        filename = "__base__/graphics/entity/laser-turret/laser-end-light.png",
+        width = 110,
+        height = 62,
+        frame_count = 8,
+        shift = util.by_pixel(11.5, 1),
+        scale = 0.5,
+        animation_speed = 0.5,
+		tint = beam_tint
+      },
+      body =
+      {
+        {
+          filename = "__base__/graphics/entity/laser-turret/laser-body-light.png",
+          line_length = 8,
+          width = 64,
+          height = 12,
+          frame_count = 8,
+          scale = 0.5,
+          animation_speed = 0.5,
+		  tint = beam_tint
+        }
+      }
+    },
+    ground = {
+      head =
+      {
+        filename = "__base__/graphics/entity/laser-turret/laser-ground-light-head.png",
+        line_length = 1,
+        width = 256,
+        height = 256,
+        repeat_count = 8,
+        scale = 0.5,
+        shift = util.by_pixel(-32, 0),
+        animation_speed = 0.5,
+        tint = beam_tint
+      },
+      tail =
+      {
+        filename = "__base__/graphics/entity/laser-turret/laser-ground-light-tail.png",
+        line_length = 1,
+        width = 256,
+        height = 256,
+        repeat_count = 8,
+        scale = 0.5,
+        shift = util.by_pixel(32, 0),
+        animation_speed = 0.5,
+        tint = beam_tint
+      },
+      body =
+      {
+        filename = "__base__/graphics/entity/laser-turret/laser-ground-light-body.png",
+        line_length = 1,
+        width = 64,
+        height = 256,
+        repeat_count = 8,
+        scale = 0.5,
+        animation_speed = 0.5,
+        tint = beam_tint
+      }
+    }
+}
+    
+beam1.working_sound =
+    {
+      sound =
+      {
+        filename = "__base__/sound/fight/electric-beam.ogg",
+        volume = 1
+      },
+      max_sounds_per_type = 4
+    }
+data:extend{beam1}

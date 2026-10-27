@@ -1,0 +1,79 @@
+---------------------------------------------------------------------------------------------------
+Version: 1.0.7
+Date: 2026-10-25
+  Bugfixes:
+    - Fixed client startup failure caused by the Crystallizer using obsolete assembling-machine-2 shadow sprite dimensions.
+    - Load the shadow dimensions and offset from Factorio 2.1's official sprite metadata and repeat its static frame across the existing 32-frame Crystallizer animation.
+  Notes:
+    - Only the Crystallizer shadow definition and release metadata changed. Runtime logic, recipes, settings and bundled graphics are unchanged.
+
+---------------------------------------------------------------------------------------------------
+Version: 1.0.6
+Date: 2026-10-25
+  Compatibility:
+    - Updated to Factorio 2.1, tested with Headless 2.1.23 in Base and Space Age.
+    - Migrated fluid access, fluid extraction and cross-surface pump connections to the 2.1 API.
+    - Updated fuel categories, recipe categories and assembler pipe graphics to the 2.1 API.
+    - Updated product probabilities, including shared probability ranges and variable output counts.
+  Bugfixes:
+    - Fixed item duplication when distributing items over multiple Deep Storages or transferring from an empty inventory.
+    - Matter Interactors, Network Explorer imports and logistic lasers preserve stacks that the name/count data network cannot represent (quality, blueprints, damage, durability, partial ammunition and spoilage).
+    - Data Assembler retains rolled products while output is blocked, including across save/load, and removes only accepted output from the pending craft.
+    - Fixed Resource Collector automatic fluid selection and preserved transferred fluid temperature.
+    - Avoided invalid zero-volume Deep Tank temperature calculations and missing cosmetic mining projectiles for manually supplied fluids/items.
+    - Restricted adjacent scripted energy sharing to the same force.
+    - Protected-call errors are now recorded in the server log as well as displayed to players.
+  Notes:
+    - Existing capacities, recipe costs, rates, startup defaults and optional Space Age support are preserved.
+    - No external graphics mod is required; the bundled graphics are unchanged.
+
+---------------------------------------------------------------------------------------------------
+Version: 1.0.5
+Date: 2026-07-26
+  Bugfixes:
+    - Fixed sparse GUI drop-down data causing "Value must be a list in property tree at ROOT.items".
+    - Fixed Network Access Point rendering when the disabled-Quatron sprite or area overlay had not been created yet.
+    - Ported Network Access Point circuit signals to Factorio 2.0 constant-combinator sections.
+
+---------------------------------------------------------------------------------------------------
+Version: 1.0.4
+Date: 2026-07-23
+  Changes:
+    - Restored the complete top Mobile Factory GUI to the mod's original default layout and sizing.
+    - Restored the original draggable area so the panel can again be moved freely with click-and-drag.
+    - Restored the original button-size and buttons-per-line controls.
+
+---------------------------------------------------------------------------------------------------
+Version: 1.0.2
+Date: 2026-07-23
+  Changes:
+    - Set the packaged Mobile Factory cargo weight to one tonne so it can be launched between planets in a standard Space Age cargo rocket.
+    - Applied the same rocket transport weight to the GT and Hovering Mobile Factory variants.
+    - Kept all vehicle physics weights unchanged so driving behaviour is unaffected.
+
+---------------------------------------------------------------------------------------------------
+Version: 1.0.1
+Date: 2026-07-23
+  Changes:
+    - Enlarged the complete top Mobile Factory control panel to four times its previous scale.
+  Bugfixes:
+    - Removed a duplicated lock button entry from the extended information GUI.
+
+---------------------------------------------------------------------------------------------------
+Version: 1.0.0
+Date: 2026-07-23
+  Major Features:
+    - Unified Mobile Factory, MF Base, and Mobile Factory Graphics into one mod.
+    - Ported the mod to Factorio 2.0 runtime and prototype APIs.
+    - Added optional Space Age compatibility without requiring the expansion.
+  Changes:
+    - Renamed the package and display title to Mobile Factory Space Age.
+    - Set the package author and maintainer to BEHROOZZX.
+    - Updated bundled asset paths and internal module paths.
+    - Removed legacy save migrations; this release is intended for new games.
+    - Disabled old third-party compatibility hooks for the first unified release.
+  Bugfixes:
+    - Updated Factorio 2 inventory-content handling.
+    - Updated per-surface production statistics calls.
+    - Fixed sparse GUI drop-down lists in multiplayer and network selectors.
+    - Updated opposite-direction handling for Factorio 2 directions.

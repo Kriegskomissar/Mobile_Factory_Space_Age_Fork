@@ -1,0 +1,13 @@
+{
+  "name": "Mobile_Factory_Space_Age",
+  "version": "1.0.7",
+  "title": "Mobile Factory Space Age",
+  "author": "BEHROOZZX",
+  "factorio_version": "2.1",
+  "dependencies": [
+    "base >= 2.1.23",
+    "? space-age >= 2.1.23"
+  ],
+  "description": "A unified Factorio 2.1 edition of Mobile Factory. Includes the former base and graphics packages, works with the base game, and supports Space Age when enabled.",
+  "homepage": "https://mobile-factory.fandom.com/wiki/Mobile_Factory_Wiki"
+}
