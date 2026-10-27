@@ -50,9 +50,6 @@ function onInit()
 	storage.upsysTickTable = storage.upsysTickTable or {}
 	storage.entsUpPerTick = storage.entsUpPerTick or _mfBaseUpdatePerTick
 	storage.upSysLastScan = storage.upSysLastScan or 0
-	-- Resource Collector --
-	storage.ResourceCollectorTable = storage.ResourceCollectorTable or {}
-	storage.RCLUpdateIndex = 1
 	-- Performance
 	storage.useVanillaChooseElem = storage.useVanillaChooseElem or false
 	-- Data Network --
