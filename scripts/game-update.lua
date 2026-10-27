@@ -9,7 +9,6 @@ require("utils/place-and-remove.lua")
 function updateEntities(event)
 	-- Update System --
 	UpSys.update(event)
-	updateAllRCL()
 end
 
 -- Check all Technologies of a Player Mobile Factory --
