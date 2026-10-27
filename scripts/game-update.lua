@@ -55,19 +55,3 @@ function updateIndoorLights()
 		end
 	end
 end
-
--- Update all Resources Collectors --
-function updateAllRCL()
-	-- Check the Index --
-	if storage.RCLUpdateIndex > table_size(storage.ResourceCollectorTable) then storage.RCLUpdateIndex = 1 end
-	-- Get the next Resources Collector to update --
-	local rcl = storage.ResourceCollectorTable[storage.RCLUpdateIndex]
-	-- Increase the Index --
-	storage.RCLUpdateIndex = storage.RCLUpdateIndex + 1
-	-- Check the Resouces Collector --
-	if rcl == nil then return end
-	-- Update if needed --
-	if game.tick - rcl.lastUpdate > _mfRCLUpdateTick then
-		RCL.update(rcl)
-	end
-end
