@@ -30,21 +30,21 @@ data.raw.technology.SuperFactory.unit =
 }
 
 -- Hovering Factory --
-createNewMF("HMobileFactory", {49,92,255}, 0.9, "c",  "__Mobile_Factory_Space_Age__/graphics/mobile-factory/HMF.png")
-data.raw.car.HMobileFactory.max_health = 2000
-data.raw.car.HMobileFactory.consumption = "550kW"
-data.raw.car.HMobileFactory.weight = 30000
-data.raw.car.HMobileFactory.braking_power = "400kW"
-data.raw.car.HMobileFactory.rotation_speed = 0.15 / 60
-data.raw.car.HMobileFactory.effectivity = 0.8
-data.raw.car.HMobileFactory.equipment_grid = "MFEquipmentGridH"
-data.raw.car.HMobileFactory.inventory_size = 8
-data.raw.car.HMobileFactory.collision_mask = {
+createNewMF("MegaFactory", {49,92,255}, 0.9, "c",  "__Mobile_Factory_Space_Age__/graphics/mobile-factory/HMF.png")
+data.raw.car.MegaFactory.max_health = 2000
+data.raw.car.MegaFactory.consumption = "550kW"
+data.raw.car.MegaFactory.weight = 30000
+data.raw.car.MegaFactory.braking_power = "400kW"
+data.raw.car.MegaFactory.rotation_speed = 0.15 / 60
+data.raw.car.MegaFactory.effectivity = 0.8
+data.raw.car.MegaFactory.equipment_grid = "MFEquipmentGridH"
+data.raw.car.MegaFactory.inventory_size = 8
+data.raw.car.MegaFactory.collision_mask = {
 	layers = {},
 }
-data.raw.car.HMobileFactory.animation.layers[3].shift = util.by_pixel(17.75, 80)
-data.raw.car.HMobileFactory.selection_priority = 120
-data.raw.recipe.HMobileFactory.ingredients =
+data.raw.car.MegaFactory.animation.layers[3].shift = util.by_pixel(17.75, 80)
+data.raw.car.MegaFactory.selection_priority = 120
+data.raw.recipe.MegaFactory.ingredients =
 {
 	{type="item", name="MobileFactory", amount=1},
     {type="item", name="CrystalizedCircuit", amount=20},
