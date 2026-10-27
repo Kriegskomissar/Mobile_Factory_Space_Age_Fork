@@ -154,8 +154,8 @@ mfI.type = "item-with-entity-data"
 mfI.name = "SmallFactory"
 mfI.icon = "__Mobile_Factory_Space_Age__/graphics/mobile-factory/tank.png"
 mfI.icon_size = 256
-mfI.place_result = "MobileFactory"
-mfI.subgroup = "MobileFactory"
+mfI.place_result = "SmallFactory"
+mfI.subgroup = "SmallFactory"
 mfI.order = "a"
 mfI.stack_size = 1
 mfI.weight = 1 * tons
@@ -177,7 +177,7 @@ mfR.ingredients = {
 }
 mfR.results = {{
     type = "item",
-    name = "MobileFactory",
+    name = "SmallFactory",
     amount = 1
 }}
 data:extend{mfR}
@@ -228,14 +228,14 @@ function createNewMF(name, color, size, order, icon)
     nMFE.selection_box = {{-2 * size, -3.5 * size}, {1.6 * size, 2.5 * size}}
     data:extend{nMFE}
 
-    local nMFI = table.deepcopy(data.raw["item-with-entity-data"].MobileFactory)
+    local nMFI = table.deepcopy(data.raw["item-with-entity-data"].SmallFactory)
     nMFI.name = name
     nMFI.order = order
     nMFI.icon = icon
     nMFI.place_result = name
     data:extend{nMFI}
 
-    local nMFR = table.deepcopy(data.raw.recipe.MobileFactory)
+    local nMFR = table.deepcopy(data.raw.recipe.SmallFactory)
     nMFR.name = name
     nMFR.results = {{
         type = "item",
