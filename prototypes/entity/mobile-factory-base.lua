@@ -31,28 +31,6 @@ mf.rotation_speed = 0.30 / 60
 mf.guns = {"mfTank-machine-gun"}
 mf.collision_box = {{-1.5, -2.5}, {1.0, 2.5}}
 mf.selection_box = {{-2, -3.5}, {1.6, 2.5}}
---[[
-mf.animation =
-{
-	priority = "low",
-			width = 300,
-			height = 300,
-			frame_count = 1,
-			direction_count = 71,
-			shift = util.by_pixel(-4.75, -10),
-			animation_speed = 8,
-			max_advance = 1,
-			scale = 1,
-			stripes =
-			{
-				{
-				filename = "__Mobile_Factory_Space_Age__/graphics/mobile-factory/mobile-factory.png",
-				width_in_frames = 10,
-				height_in_frames = 8
-				}
-			}
-}
---]]
 mf.animation = {
     layers = {{
         priority = "low",
@@ -180,26 +158,23 @@ mfI.place_result = "MobileFactory"
 mfI.subgroup = "MobileFactory"
 mfI.order = "a"
 mfI.stack_size = 1
--- Keep cargo weight separate from the car prototype's physics weight.
--- One Mobile Factory occupies one standard Space Age cargo rocket.
 mfI.weight = 1 * tons
 data:extend{mfI}
 
 -- Create the Mobile Factory Recipe --
+-- Новая версия больше не использует DimensionalOre, MachineFrame или
+-- другие материалы старой экономики. Производство опирается на обычные
+-- ресурсы Factorio.
 local mfR = {}
 mfR.type = "recipe"
 mfR.name = "MobileFactory"
 mfR.enabled = false
 mfR.energy_required = 10
-mfR.ingredients = {{
-    type = "item",
-    name = "DimensionalCircuit",
-    amount = 25
-}, {
-    type = "item",
-    name = "MachineFrame2",
-    amount = 6
-}}
+mfR.ingredients = {
+    {type = "item", name = "steel-plate", amount = 100},
+    {type = "item", name = "processing-unit", amount = 50},
+    {type = "item", name = "engine-unit", amount = 20}
+}
 mfR.results = {{
     type = "item",
     name = "MobileFactory",
@@ -215,16 +190,17 @@ mfT.icon = "__Mobile_Factory_Space_Age__/graphics/mobile-factory/tank.png"
 mfT.icon_size = 256
 mfT.unit = {
     count = 250,
-    time = 1,
-    ingredients = {{"DimensionalSample", 1}}
+    time = 30,
+    ingredients = {
+        {"automation-science-pack", 1},
+        {"logistic-science-pack", 1},
+        {"military-science-pack", 1}
+    }
 }
-mfT.prerequisites = {"DimensionalOre"}
+mfT.prerequisites = {"tank"}
 mfT.effects = {{
     type = "unlock-recipe",
     recipe = "MobileFactory"
-}, {
-    type = "unlock-recipe",
-    recipe = "DimensionalTile"
 }}
 data:extend{mfT}
 
@@ -276,10 +252,14 @@ function createNewMF(name, color, size, order, icon)
     nMFT.icon_size = 256
     nMFT.unit = {
         count = 1000,
-        time = 2,
-        ingredients = {{"DimensionalSample", 1}}
+        time = 60,
+        ingredients = {
+            {"automation-science-pack", 1},
+            {"logistic-science-pack", 1},
+            {"military-science-pack", 1}
+        }
     }
-    nMFT.prerequisites = {"DimensionalCrystal"}
+    nMFT.prerequisites = {"MobileFactory"}
     nMFT.effects = {{
         type = "unlock-recipe",
         recipe = name
