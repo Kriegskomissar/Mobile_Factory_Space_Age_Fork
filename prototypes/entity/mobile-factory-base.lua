@@ -3,12 +3,11 @@
 local mf = table.deepcopy(data.raw.car.tank)
 mf.name = "SmallFactory"
 mf.order = "a"
-mf.equipment_grid = "MFEquipmentGrid"
 mf.minable = {
     mining_time = 1.5,
     result = "SmallFactory"
 }
-mf.inventory_size = 10
+mf.inventory_size = 160
 mf.max_health = 2500
 mf.collision_mask = {
     layers = {
