@@ -1,12 +1,12 @@
 -- THE BASE MOBILE FACTORY PROTOTYPE --
 -- Create Mobile Factory entity (Copy from base tank) --
 local mf = table.deepcopy(data.raw.car.tank)
-mf.name = "MobileFactory"
+mf.name = "SmallFactory"
 mf.order = "a"
 mf.equipment_grid = "MFEquipmentGrid"
 mf.minable = {
     mining_time = 1.5,
-    result = "MobileFactory"
+    result = "SmallFactory"
 }
 mf.inventory_size = 10
 mf.max_health = 2500
@@ -151,7 +151,7 @@ data:extend{mf}
 -- Create Mobile Factory Item --
 local mfI = {}
 mfI.type = "item-with-entity-data"
-mfI.name = "MobileFactory"
+mfI.name = "SmallFactory"
 mfI.icon = "__Mobile_Factory_Space_Age__/graphics/mobile-factory/tank.png"
 mfI.icon_size = 256
 mfI.place_result = "MobileFactory"
@@ -167,7 +167,7 @@ data:extend{mfI}
 -- ресурсы Factorio.
 local mfR = {}
 mfR.type = "recipe"
-mfR.name = "MobileFactory"
+mfR.name = "SmallFactory"
 mfR.enabled = false
 mfR.energy_required = 10
 mfR.ingredients = {
@@ -184,7 +184,7 @@ data:extend{mfR}
 
 -- Create the Mobile Factory Technology --
 local mfT = {}
-mfT.name = "MobileFactory"
+mfT.name = "SmallFactory"
 mfT.type = "technology"
 mfT.icon = "__Mobile_Factory_Space_Age__/graphics/mobile-factory/tank.png"
 mfT.icon_size = 256
@@ -200,13 +200,13 @@ mfT.unit = {
 mfT.prerequisites = {"tank"}
 mfT.effects = {{
     type = "unlock-recipe",
-    recipe = "MobileFactory"
+    recipe = "SmallFactory"
 }}
 data:extend{mfT}
 
 -- Create a new Mobile Factory --
 function createNewMF(name, color, size, order, icon)
-    local nMFE = table.deepcopy(data.raw.car.MobileFactory)
+    local nMFE = table.deepcopy(data.raw.car.SmallFactory)
     nMFE.name = name
     nMFE.order = order
     nMFE.minable = {
@@ -259,7 +259,7 @@ function createNewMF(name, color, size, order, icon)
             {"military-science-pack", 1}
         }
     }
-    nMFT.prerequisites = {"MobileFactory"}
+    nMFT.prerequisites = {"SmallFactory"}
     nMFT.effects = {{
         type = "unlock-recipe",
         recipe = name
