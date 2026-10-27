@@ -86,6 +86,11 @@ function MF:new(args)
 
     t.internalEnergyObj = t.internalEnergyObj or IEC:new(t)
     t.internalQuatronObj = t.internalQuatronObj or IQC:new(t)
+    -- Jump Drive является самостоятельной системой мобильной фабрики.
+    -- TODO:
+    -- В будущем заменить старые зависимости Jump Drive
+    -- (Internal Energy / Quatron / Jump Charger)
+    -- на новую систему ограничений и питания.
     t.jumpDriveObj = t.jumpDriveObj or JD:new(t)
 
     t.MF = t
