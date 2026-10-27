@@ -6,8 +6,6 @@ jdE.name = "JumpDrive"
 jdE.icon = "__Mobile_Factory_Space_Age__/graphics/entity/JumpDriveI.png"
 jdE.order = "JumpDrive"
 jdE.icon_size = 128
--- jdE.flags = {"placeable-neutral", "player-creation"}
--- jdE.minable = {mining_time = 0.5, result = "EnergyCubeMK1"}
 jdE.max_health = 10000
 jdE.corpse = "accumulator-remnants"
 jdE.collision_box = {{-2.9, -2.1}, {2.9, 3.7}}
@@ -50,47 +48,46 @@ jdE.chargable_graphics = {
     discharge_cooldown = 0,
     discharge_light = nil,
     picture = {
-    layers = {{
-        filename = "__Mobile_Factory_Space_Age__/graphics/entity/JumpDriveG.png",
-        priority = "high",
-        width = 600,
-        height = 600,
-        -- shift = {0.5,-0.3},
-        scale = 1 / 2.25,
-        draw_as_glow = true
-    }, {
-        filename = "__Mobile_Factory_Space_Age__/graphics/entity/JumpDriveE.png",
-        priority = "high",
-        width = 600,
-        height = 600,
-        -- shift = {0.5,-0.3},
-        scale = 1 / 2.25
-    }, {
-        filename = "__Mobile_Factory_Space_Age__/graphics/entity/JumpDriveS.png",
-        priority = "high",
-        width = 600,
-        height = 600,
-        -- shift = {0.5,-0.3},
-        draw_as_shadow = true,
-        scale = 1 / 2.25
-    }},
-}
+        layers = {{
+            filename = "__Mobile_Factory_Space_Age__/graphics/entity/JumpDriveG.png",
+            priority = "high",
+            width = 600,
+            height = 600,
+            scale = 1 / 2.25,
+            draw_as_glow = true
+        }, {
+            filename = "__Mobile_Factory_Space_Age__/graphics/entity/JumpDriveE.png",
+            priority = "high",
+            width = 600,
+            height = 600,
+            scale = 1 / 2.25
+        }, {
+            filename = "__Mobile_Factory_Space_Age__/graphics/entity/JumpDriveS.png",
+            priority = "high",
+            width = 600,
+            height = 600,
+            draw_as_shadow = true,
+            scale = 1 / 2.25
+        }}
+    }
 }
 
 data:extend{jdE}
 
 -- Technology --
+-- Jump Drive теперь не зависит от DimensionalSample/DimensionalCrystal.
+-- Позже его прогрессию можно сделать отдельной от обычной Factorio-ветки.
 local jdT = {}
 jdT.name = "JumpDrive"
 jdT.type = "technology"
 jdT.icon = "__Mobile_Factory_Space_Age__/graphics/entity/JumpDriveI.png"
 jdT.icon_size = 128
 jdT.unit = {
-    count = 10,
+    count = 100,
     time = 60,
-    ingredients = {{"DimensionalSample", 100}, {"DimensionalCrystal", 1}}
+    ingredients = {{"space-science-pack", 1}}
 }
-jdT.prerequisites = {"DimensionalCrystal"}
+jdT.prerequisites = {"rocket-silo"}
 jdT.effects = {{
     type = "nothing",
     effect_description = {"description.JumpDrive"}
