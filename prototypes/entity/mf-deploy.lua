@@ -31,19 +31,21 @@ mfdI.flags = {"only-in-cursor"}
 data:extend{mfdI}
 
 -- Technology --
+-- Новая прогрессия использует обычные научные пакеты Factorio.
 local mfDT = {}
 mfDT.name = "MFDeploy"
 mfDT.type = "technology"
 mfDT.icon = "__Mobile_Factory_Space_Age__/graphics/icons/MFDeployT.png"
 mfDT.icon_size = 600
 mfDT.unit = {
-	count=1,
-	time=3,
-	ingredients={
-		{"DimensionalSample", 350}
-	}
+    count = 100,
+    time = 30,
+    ingredients = {
+        {"automation-science-pack", 1},
+        {"logistic-science-pack", 1}
+    }
 }
-mfDT.prerequisites = {"DimensionalOre"}
+mfDT.prerequisites = {"MobileFactory"}
 mfDT.effects = {{type="nothing", effect_description={"description.Deploy"}}}
 data:extend{mfDT}
 
@@ -55,14 +57,14 @@ for i = 5, 20 do
   mfDTS.icon = "__Mobile_Factory_Space_Age__/graphics/icons/DPSlotT.png"
   mfDTS.icon_size = 64
   mfDTS.unit = {
-    count=1*i,
-    time=i,
-    ingredients={
-      {"DimensionalSample", 100}
+    count = 50 * i,
+    time = i,
+    ingredients = {
+      {"automation-science-pack", 1}
     }
   }
-  if i > 13 then
-    table.insert(mfDTS.unit.ingredients, {"DimensionalCrystal", 1})
+  if i >= 14 then
+    table.insert(mfDTS.unit.ingredients, {"logistic-science-pack", 1})
   end
   if i == 5 then
     mfDTS.prerequisites = {"MFDeploy"}
@@ -72,4 +74,3 @@ for i = 5, 20 do
   mfDTS.effects = {{type="nothing", effect_description={"description.MFDSlot" .. i}}}
   data:extend{mfDTS}
 end
-
