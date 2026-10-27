@@ -51,7 +51,7 @@ data.raw.recipe.MegaFactory.ingredients =
     {type="item", name="MachineFrame3", amount=25},
 	{type="item", name="EnergyCore", amount=1}
 }
-data.raw.technology.HMobileFactory.unit =
+data.raw.technology.MegaFactory.unit =
 {
 	count=10,
 		time=60,
