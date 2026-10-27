@@ -60,11 +60,7 @@ function MF:new(args)
 
     t.II = t.II or INV:new("Internal Inventory")
     t.II.MF = t
-    -- Jump Drive является самостоятельной системой мобильной фабрики.
-    -- TODO:
-    -- В будущем заменить старые зависимости Jump Drive
-    -- (Internal Energy / Quatron / Jump Charger)
-    -- на новую систему ограничений и питания.
+     
     t.jumpDriveObj = t.jumpDriveObj or JD:new(t)
 
     t.MF = t
@@ -205,12 +201,6 @@ function MF:update(event)
             player.print({"gui-description.UpdateMF_UpdateTPFailed", self.name})
         end
     end
-    -- Read Modules inside the Equipment Grid --
-    if event.tick % _eventTick125 == 0 then
-        if mfCall(MF.scanModules, self) == true then
-            player.print({"gui-description.UpdateMF_UpdateScanModulesFailed", self.name})
-        end
-    end
     -- Update the Sync Area --
     -- if tick%_eventTick30 == 0 then self:updateSyncArea() end
 end
@@ -272,23 +262,6 @@ function MF:scanModules()
     -- Check if the Technology is unlocked --
     if Util.technologyUnlocked("EnergyPowerModule", getForce(self.player)) == nil then
         return
-    end
-    -- Init Variables --
-    self.laserRadiusMultiplier = 0
-    self.laserDrainMultiplier = 0
-    self.laserNumberMultiplier = 0
-    -- Look for Modules --
-    for _, equipment in pairs(self.ent.grid.equipment) do
-        if equipment.name == "EnergyPowerModule" then
-            self.laserRadiusMultiplier = self.laserRadiusMultiplier + 1
-        end
-        if equipment.name == "EnergyEfficiencyModule" then
-            self.laserDrainMultiplier = self.laserDrainMultiplier + 1
-        end
-        if equipment.name == "EnergyFocusModule" then
-            self.laserNumberMultiplier = self.laserNumberMultiplier + 1
-        end
-    end
 end
 
 -- Call the mobile Factory to the player (Before TP) --
@@ -400,10 +373,7 @@ function MF:TPMobileFactoryPart2()
     local distance = Util.distance({self.tpLocation.posX, self.tpLocation.posY}, self.ent.position)
     -- Remove the Jump Drive Charge --
     EI.removeEnergy(self.jumpDriveObj, distance)
-    -- Remove the Quatron --
-    if self.tpLocation.surface ~= self.ent.surface then
-        EI.removeEnergy(self.internalQuatronObj, 1000)
-    end
+            
     -- Teleport the Mobile Factory to the cords --
     self.ent.teleport({self.tpLocation.posX, self.tpLocation.posY}, self.tpLocation.surface)
     -- Save the position --
