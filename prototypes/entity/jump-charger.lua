@@ -70,37 +70,29 @@ jcI.order = "z"
 jcI.stack_size = 10
 data:extend{jcI}
 
--- Recipe --
-local jcR = {}
-jcR.type = "recipe"
-jcR.name = "JumpCharger"
-jcR.energy_required = 5
-jcR.enabled = false
-jcR.ingredients =
-    {
-      {type="item", name="CrystalizedCircuit", amount=25},
-      {type="item", name="MachineFrame3", amount=3},
-      {type="item", name="EnergyCore", amount=5}
-    }
-jcR.results = 
-  {
-    {type="item", name="JumpCharger", amount=1}
-  }
-data:extend{jcR}
+-- ============================================================================
+-- РЕЦЕПТ И ТЕХНОЛОГИЯ JUMP CHARGER
+-- ============================================================================
 
--- Technology --
-local jcT = {}
-jcT.name = "JumpCharger"
-jcT.type = "technology"
-jcT.icon = "__Mobile_Factory_Space_Age__/graphics/entity/JumpChargerI.png"
-jcT.icon_size = 128
-jcT.unit = {
-count=15,
-time=100,
-ingredients={
-  {"DimensionalSample", 80},
-  {"DimensionalCrystal", 1}
-}}
-jcT.prerequisites = {"EnergyCore", "JumpDrive"}
-jcT.effects = {{type="unlock-recipe", recipe="JumpCharger"}}
-data:extend{jcT}
+-- Старые рецепт и технология удалены.
+--
+-- Они были завязаны на старую экономику Mobile Factory:
+-- CrystalizedCircuit
+-- MachineFrame3
+-- EnergyCore
+-- DimensionalSample
+-- DimensionalCrystal
+--
+-- Эти зависимости больше не должны проникать в новую версию мода.
+--
+-- TODO:
+-- 1. Придумать новый рецепт Jump Charger.
+-- 2. Определить, какие материалы нужны для его производства.
+-- 3. Привязать рецепт к новой системе прогрессии.
+-- 4. Определить, на каком этапе развития Mobile Factory он открывается.
+-- 5. Вернуть технологию после проектирования новой системы исследований.
+--
+-- ВАЖНО:
+-- Jump Charger не удалён как концепция.
+-- Мы просто временно оставляем его без рецепта и технологии,
+-- чтобы сначала разобраться с архитектурой Jump Drive.
