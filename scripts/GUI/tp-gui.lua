@@ -11,14 +11,12 @@ function GUI.createTPGui(player)
 
     infoFrame.style = "MFFrame1"
     markerFrame.style = "MFFrame1"
-
     infoFrame.style.left_padding = 7
     infoFrame.style.right_padding = 7
     infoFrame.style.right_margin = 3
     markerFrame.style.left_padding = 7
     markerFrame.style.right_padding = 7
     markerFrame.style.right_margin = 3
-
     infoFrame.style.vertically_stretchable = true
     markerFrame.style.vertically_stretchable = true
 
@@ -26,7 +24,7 @@ function GUI.createTPGui(player)
 
     local topFlow = GAPI.addFlow(GUITable, "MarkerTopFlow", markerFrame, "horizontal")
     topFlow.style.bottom_margin = 5
-    GAPI.addButton(GUITable, "TP.GUI.OpenMap", topFlow, "map", "map", {"gui-description.JDOpenMap"}, 32, false, true)
+    GAPI.addButton(GUITable, "TP.GUI.OpenMap", topFlow, "utility/map", "utility/map", {"gui-description.JDOpenMap"}, 32, false, true)
     GAPI.addLabel(GUITable, "", topFlow, {"gui-description.JDMapHint"}, _mfWhite)
 
     local markerPane = GAPI.addScrollPane(GUITable, "MarkerScrollPane", markerFrame, 700, true, "MF_TPGUI_scroll_pan")
@@ -38,20 +36,17 @@ function GUI.createTPGui(player)
     return GUITable
 end
 
--- Update the GUI -------------------------------------------------------------
 function GUI.updateMFTPGUI(GUITable, justCreated)
     GUI.updateInfo(GUITable)
     GUI.updateMarkers(GUITable)
 end
 
--- Update the Jump Drive information -----------------------------------------
 function GUI.updateInfo(GUITable)
     local infoFrame = GUITable.vars.InfoFrame
     local MF = getCurrentMF(GUITable.MFPlayer)
     infoFrame.clear()
 
     GAPI.addSubtitle(GUITable, "", infoFrame, {"gui-description.Information"})
-
     if MF.ent == nil or MF.ent.valid == false then
         GAPI.addLabel(GUITable, "", infoFrame, {"gui-description.MFNotFound"}, _mfRed)
         return
@@ -77,7 +72,6 @@ function GUI.updateInfo(GUITable)
     GAPI.addDualLabel(GUITable, infoFrame, {"", {"gui-description.PosY"}, ":"}, math.floor(MF.ent.position.y), _mfOrange, _mfYellow)
 end
 
--- Update the marker/station-style list ---------------------------------------
 function GUI.updateMarkers(GUITable)
     local markerPane = GUITable.vars.MarkerScrollPane
     local MF = getCurrentMF(GUITable.MFPlayer)
@@ -94,12 +88,7 @@ function GUI.updateMarkers(GUITable)
     for _, tag in pairs(markers) do
         if tag ~= nil and tag.valid then
             markerCount = markerCount + 1
-
-            local location = {
-                surface = tag.surface,
-                posX = tag.position.x,
-                posY = tag.position.y
-            }
+            local location = {surface = tag.surface, posX = tag.position.x, posY = tag.position.y}
             local canTP = MF.jumpDriveObj:canTP(location)
             local distance = math.ceil(Util.distance(MF.ent.position, {location.posX, location.posY}))
             local plan = MF.jumpDriveObj:getJumpPlan(location)
@@ -117,17 +106,16 @@ function GUI.updateMarkers(GUITable)
 
             local info = GAPI.addTable(GUITable, "", row, 1)
             info.style.horizontally_stretchable = true
-
-            GAPI.addLabel(GUITable, "", info, string.sub(tag.text or "", 1, 7) == "[MF-JD] " and string.sub(tag.text, 8) or tag.text or "Jump Marker", nil, "Jump Marker", false, nil, _mfLabelType.yellowTitle)
+            local name = tag.text or "Jump Marker"
+            if string.sub(name, 1, 7) == "[MF-JD] " then name = string.sub(name, 8) end
+            GAPI.addLabel(GUITable, "", info, name, nil, "Jump Marker", false, nil, _mfLabelType.yellowTitle)
             GAPI.addLabel(GUITable, "", info,
-                {"", tag.surface.name, " (", math.floor(tag.position.x), " ; ", math.floor(tag.position.y), ")"},
-                _mfWhite)
+                {"", tag.surface.name, " (", math.floor(tag.position.x), " ; ", math.floor(tag.position.y), ")"}, _mfWhite)
 
             if plan ~= nil then
                 GAPI.addLabel(GUITable, "", info,
                     {"", {"gui-description.JumpCost"}, ": ", Util.toRNumber(plan.energy), "J  •  ", distance, "m  •  ",
-                        {"gui-description.JumpPulseTime"}, ": ", string.format("%.2f", plan.duration), "s"},
-                    _mfWhite)
+                        {"gui-description.JumpPulseTime"}, ": ", string.format("%.2f", plan.duration), "s"}, _mfWhite)
             else
                 GAPI.addLabel(GUITable, "", info, {"gui-description.JDUnavailable"}, _mfRed)
             end
@@ -135,11 +123,10 @@ function GUI.updateMarkers(GUITable)
             local buttonFlow = GAPI.addFlow(GUITable, "", row, "vertical")
             buttonFlow.style.vertical_align = "center"
             local jumpButton = GAPI.addButton(GUITable, "TP.GUI.Loc,", buttonFlow,
-                canTP and "PlayIcon" or "MFJDIcon", canTP and "PlayIcon" or "MFJDIcon",
+                canTP and "MFJDIcon" or "MFJDIcon", "MFJDIcon",
                 canTP and {"gui-description.StartJump"} or {"gui-description.JDUnavailable"}, 32, false, true, nil, nil, {loc = tag.tag_number})
             jumpButton.enabled = canTP
-
-            GAPI.addButton(GUITable, "TP.GUI.RemoveLoc,", buttonFlow, "TrashIcon", "TrashIcon", {"gui-description.RemoveLocation"}, 28, false, true, nil, nil, {loc = tag.tag_number})
+            GAPI.addButton(GUITable, "TP.GUI.RemoveLoc,", buttonFlow, "utility/remove", "utility/remove", {"gui-description.RemoveLocation"}, 28, false, true, nil, nil, {loc = tag.tag_number})
         end
     end
 
@@ -148,7 +135,6 @@ function GUI.updateMarkers(GUITable)
     end
 end
 
--- Player interaction ---------------------------------------------------------
 function GUI.TPMFGUIInteraction(event, MFPlayer, currentMF)
     local jumpDrive = currentMF.jumpDriveObj
 
@@ -167,12 +153,6 @@ function GUI.TPMFGUIInteraction(event, MFPlayer, currentMF)
             end
         end
         if tag == nil then return end
-
-        local location = {
-            surface = tag.surface,
-            posX = tag.position.x,
-            posY = tag.position.y
-        }
         if event.button == defines.mouse_button_type.left then
             jumpDrive:jump(tag.text)
         end
