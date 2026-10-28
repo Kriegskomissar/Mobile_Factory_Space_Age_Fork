@@ -1,7 +1,8 @@
 ---------------------------------- JUMP DRIVE EQUIPMENT ----------------------------------
 --
--- Jump Drive is now equipment installed in a Mobile Factory equipment grid.
--- It no longer exists as a separate world entity.
+-- Jump Drive is equipment installed in a Mobile Factory equipment grid.
+-- It is the actual teleport mechanism and has no usable internal battery.
+-- Its energy pulse is supplied exclusively by installed Jump Chargers.
 --
 -- Energy model:
 --   E = 100 MJ * mass(t) * distance(km)
@@ -12,10 +13,9 @@
 --   Mk.II  = 240 MW, 5 s
 --   Mk.III = 1.2 GW, 1 s
 --
--- The 25 t / 480 m benchmark therefore costs 1.2 GJ and takes exactly 10 s
--- with Mk.I. Heavier factories or longer jumps can exceed the Drive's limit.
+-- All marks occupy a 5x5 block in the equipment grid.
 
-local function createJumpDrive(name, icon, width, height, power, maxTime, order)
+local function createJumpDrive(name, icon, power, maxTime, order)
     data:extend{
         {
             type = "battery-equipment",
@@ -27,10 +27,13 @@ local function createJumpDrive(name, icon, width, height, power, maxTime, order)
                 priority = "medium"
             },
             shape = {
-                width = width,
-                height = height,
+                width = 5,
+                height = 5,
                 type = "full"
             },
+            -- The Drive itself does not store meaningful energy and cannot
+            -- receive or output power through the normal equipment grid.
+            -- Jump Drive runtime logic consumes energy from Jump Charger(s).
             energy_source = {
                 type = "electric",
                 buffer_capacity = "1J",
@@ -64,16 +67,16 @@ local function createJumpDrive(name, icon, width, height, power, maxTime, order)
         }
     }
 
-    -- These custom prototype fields are read by the runtime Jump Drive object.
+    -- Runtime Jump Drive object reads these custom prototype fields.
     data.raw["battery-equipment"][name].mf_jump_power = power
     data.raw["battery-equipment"][name].mf_jump_max_time = maxTime
 end
 
-local icon = "__Mobile_Factory_Space_Age__/graphics/entity/JumpDriveI.png"
+local icon = "__Mobile_Factory_Space_Age__/graphics/entity/JumpDriveE.png"
 
-createJumpDrive("JumpDrive-Mk1", icon, 2, 2, 120e6, 10, "a")
-createJumpDrive("JumpDrive-Mk2", icon, 2, 2, 240e6, 5, "b")
-createJumpDrive("JumpDrive-Mk3", icon, 3, 3, 1.2e9, 1, "c")
+createJumpDrive("JumpDrive-Mk1", icon, 120e6, 10, "a")
+createJumpDrive("JumpDrive-Mk2", icon, 240e6, 5, "b")
+createJumpDrive("JumpDrive-Mk3", icon, 1.2e9, 1, "c")
 
 ---------------------------------- TECHNOLOGIES ----------------------------------
 
