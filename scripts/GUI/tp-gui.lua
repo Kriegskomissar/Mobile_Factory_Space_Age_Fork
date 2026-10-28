@@ -1,236 +1,193 @@
--- Create the TP GUI --
+-- Create the Jump Drive GUI ---------------------------------------------------
 function GUI.createTPGui(player)
-
-    -- Get the MFPlayer --
-	local MFPlayer = getMFPlayer(player.name)
-
-    -- Create the GUI --
+    local MFPlayer = getMFPlayer(player.name)
     local GUITable = GAPI.createBaseWindows(_mfGUIName.TPGUI, {"gui-description.MFTPGUITitle"}, MFPlayer, true, true, false, "vertical", "horizontal")
     local mainFrame = GUITable.vars.MainFrame
 
-    -- Add the Close Button --
     GAPI.addCloseButton(GUITable)
 
-    -- Create the Frames --
     local infoFrame = GAPI.addFrame(GUITable, "InfoFrame", mainFrame, "vertical", true)
-    local locFrame = GAPI.addFrame(GUITable, "LocFrame", mainFrame, "vertical", true)
-    local addLocFrame = GAPI.addFrame(GUITable, "AddLocFrame", mainFrame, "vertical", true)
+    local markerFrame = GAPI.addFrame(GUITable, "MarkerFrame", mainFrame, "vertical", true)
 
     infoFrame.style = "MFFrame1"
-	locFrame.style = "MFFrame1"
-	addLocFrame.style = "MFFrame1"
+    markerFrame.style = "MFFrame1"
 
     infoFrame.style.left_padding = 7
     infoFrame.style.right_padding = 7
     infoFrame.style.right_margin = 3
-	locFrame.style.left_padding = 7
-    locFrame.style.right_padding = 7
-    locFrame.style.right_margin = 3
-	addLocFrame.style.left_padding = 7
-    addLocFrame.style.right_padding = 7
+    markerFrame.style.left_padding = 7
+    markerFrame.style.right_padding = 7
+    markerFrame.style.right_margin = 3
 
     infoFrame.style.vertically_stretchable = true
-	locFrame.style.vertically_stretchable = true
-    addLocFrame.style.vertically_stretchable = true
+    markerFrame.style.vertically_stretchable = true
 
-    -- Add the Location Title --
-    GAPI.addSubtitle(GUITable, "", locFrame, {"gui-description.JumpLocation"})
-    GAPI.addSubtitle(GUITable, "", addLocFrame, {"gui-description.AddLocation"})
+    GAPI.addSubtitle(GUITable, "", markerFrame, {"gui-description.JumpMarkers"})
 
-    -- Create the Location ScroolPane --
-    local locPane = GAPI.addScrollPane(GUITable, "LocScrollPane", locFrame, 700, true, "MF_TPGUI_scroll_pan")
-    locPane.style.minimal_height = 350
-    locPane.style.minimal_width = 250
-    locPane.style.bottom_margin = 3
+    local topFlow = GAPI.addFlow(GUITable, "MarkerTopFlow", markerFrame, "horizontal")
+    topFlow.style.bottom_margin = 5
+    GAPI.addButton(GUITable, "TP.GUI.OpenMap", topFlow, "map", "map", {"gui-description.JDOpenMap"}, 32, false, true)
+    GAPI.addLabel(GUITable, "", topFlow, {"gui-description.JDMapHint"}, _mfWhite)
 
-    -- Update the GUI --
+    local markerPane = GAPI.addScrollPane(GUITable, "MarkerScrollPane", markerFrame, 700, true, "MF_TPGUI_scroll_pan")
+    markerPane.style.minimal_height = 350
+    markerPane.style.minimal_width = 420
+    markerPane.style.bottom_margin = 3
+
     GUI.updateMFTPGUI(GUITable, true)
-
-    -- Return the Table --
     return GUITable
-
 end
 
--- Update the TP GUI --
+-- Update the GUI -------------------------------------------------------------
 function GUI.updateMFTPGUI(GUITable, justCreated)
     GUI.updateInfo(GUITable)
-    GUI.updateLocation(GUITable)
-    if justCreated == true then GUI.updateAddLocation(GUITable) end
+    GUI.updateMarkers(GUITable)
 end
 
--- Update the Information --
+-- Update the Jump Drive information -----------------------------------------
 function GUI.updateInfo(GUITable)
-
-    -- Get all Variables --
     local infoFrame = GUITable.vars.InfoFrame
     local MF = getCurrentMF(GUITable.MFPlayer)
-
-    -- Clear the Flow --
     infoFrame.clear()
 
-    -- Add the Title --
     GAPI.addSubtitle(GUITable, "", infoFrame, {"gui-description.Information"})
 
-    -- Check the Mobile Factory --
     if MF.ent == nil or MF.ent.valid == false then
         GAPI.addLabel(GUITable, "", infoFrame, {"gui-description.MFNotFound"}, _mfRed)
         return
     end
 
-    -- Add the Jump Drive Subtitle --
     GAPI.addLabel(GUITable, "", infoFrame, {"gui-description.JumpDriveSubTitle"}, nil, nil, false, nil, _mfLabelType.yellowTitle)
+    GAPI.addDualLabel(GUITable, infoFrame, {"", {"gui-description.JumpDriveStatue"}, ":"},
+        Util.toRNumber(MF.jumpDriveObj.charge) .. " / " .. Util.toRNumber(MF.jumpDriveObj.maxCharge) ..
+        " (+" .. Util.toRNumber(MF.jumpDriveObj.chargeRate) .. "/s)", _mfOrange, _mfYellow)
+    GAPI.addDualLabel(GUITable, infoFrame, {"", {"gui-description.JumpChargerCount"}, ":"},
+        table_size(MF.jumpDriveObj.jumpChargerTable), _mfOrange, _mfYellow)
 
-    -- Add the Jump Drive Statue --
-    GAPI.addDualLabel(GUITable, infoFrame, {"",{"gui-description.JumpDriveStatue"}, ":"}, MF.jumpDriveObj.charge .. "/" .. MF.jumpDriveObj.maxCharge .. " (+" .. MF.jumpDriveObj.chargeRate .. "/s)", _mfOrange, _mfYellow)
+    if MF.jumpDriveObj.drive ~= nil then
+        GAPI.addDualLabel(GUITable, infoFrame, {"", {"gui-description.JumpDriveMark"}, ":"},
+            MF.jumpDriveObj.drive.mark, _mfOrange, _mfYellow)
+        GAPI.addDualLabel(GUITable, infoFrame, {"", {"gui-description.JumpDrivePulsePower"}, ":"},
+            Util.toRNumber(MF.jumpDriveObj.drive.power) .. "W", _mfOrange, _mfYellow)
+    end
 
-    -- Add the Jump Charger Count --
-    GAPI.addDualLabel(GUITable, infoFrame, {"",{"gui-description.JumpChargerCount"}, ":"}, table_size(MF.jumpDriveObj.jumpChargerTable), _mfOrange, _mfYellow)
-
-    -- Add the Jump Drive Consumption --
-    GAPI.addDualLabel(GUITable, infoFrame, {"",{"gui-description.JumpDriveConsumption"}, ":"}, Util.toRNumber(MF.jumpDriveObj.chargeRate * _mfJumpEnergyDrain) .. "W" , _mfOrange, _mfYellow)
-
-    -- Add the Mobile Factory Subtitle --
     GAPI.addLabel(GUITable, "", infoFrame, {"gui-description.MobileFactorySubtitle"}, nil, nil, false, nil, _mfLabelType.yellowTitle)
-
-    -- Add the World Position --
-    GAPI.addDualLabel(GUITable, infoFrame, {"",{"gui-description.World"}, ":"}, MF.ent.surface.name, _mfOrange, _mfYellow)
-
-    -- Add the Position X --
-    GAPI.addDualLabel(GUITable, infoFrame, {"",{"gui-description.PosX"}, ":"}, MF.ent.position.x, _mfOrange, _mfYellow)
-
-    -- Add the Position Y --
-    GAPI.addDualLabel(GUITable, infoFrame, {"",{"gui-description.PosY"}, ":"}, MF.ent.position.y, _mfOrange, _mfYellow)
-
+    GAPI.addDualLabel(GUITable, infoFrame, {"", {"gui-description.World"}, ":"}, MF.ent.surface.name, _mfOrange, _mfYellow)
+    GAPI.addDualLabel(GUITable, infoFrame, {"", {"gui-description.PosX"}, ":"}, math.floor(MF.ent.position.x), _mfOrange, _mfYellow)
+    GAPI.addDualLabel(GUITable, infoFrame, {"", {"gui-description.PosY"}, ":"}, math.floor(MF.ent.position.y), _mfOrange, _mfYellow)
 end
 
--- Update the Location --
-function GUI.updateLocation(GUITable)
-
-    -- Get all Variables --
-    local locPane = GUITable.vars.LocScrollPane
+-- Update the marker/station-style list ---------------------------------------
+function GUI.updateMarkers(GUITable)
+    local markerPane = GUITable.vars.MarkerScrollPane
     local MF = getCurrentMF(GUITable.MFPlayer)
+    markerPane.clear()
 
-    -- Clear the ScrollPane --
-    locPane.clear()
-
-    -- Look for all Locations --
-    if MF.jumpDriveObj.locationTable == nil then MF.jumpDriveObj.locationTable = {} end
-    for name, loc in pairs(MF.jumpDriveObj.locationTable) do
-
-        -- Check the Surface --
-        if loc.surface == nil or loc.surface.valid == false or game.surfaces[loc.surface.name] == nil then
-            MF.jumpDriveObj.locationTable[name] = nil
-            goto continue
-        end
-
-        -- Calculate the Distance --
-        local distance = Util.distance(MF.ent.position, {loc.posX,loc.posY})
-        distance = math.ceil(distance)
-        local canTP = MF.jumpDriveObj:canTP(loc)
-
-        -- Create the Frame --
-        local frame = GAPI.addFrame(GUITable, "", locPane, "horizontal")
-
-        -- Create the Flow --
-        local flow = GAPI.addFlow(GUITable, "", frame, "horizontal")
-        flow.style.vertical_align = "center"
-
-        -- Add the TP Button --
-        local icon = loc.filter ~= nil and ("recipe/" .. loc.filter) or "MFJDIcon"
-        local button = GAPI.addButton(GUITable, "TP.GUI.Loc,", flow, icon, icon, {"gui-description.StartJump"}, 50, false, true, nil, nil, {loc=name})
-        button.style = canTP == true and "shortcut_bar_button_green" or "MF_Fake_Button_Red"
-        button.style.padding = 0
-        button.style.margin = 0
-
-        -- Create the Information Table --
-        local infoTable = GAPI.addTable(GUITable, "", flow, 1)
-        
-        -- Add the Location Name --
-        GAPI.addLabel(GUITable, "", infoTable, name, nil, "", false, nil, _mfLabelType.yellowTitle)
-
-        -- Add the Position --
-        GAPI.addDualLabel(GUITable, infoTable, {"", {"gui-description.Position"}, ":"}, loc.surface.name .. " (" .. math.ceil(loc.posX) .. " ; " .. math.ceil(loc.posY) .. ")", _mfOrange, _mfYellow)
-
-        -- Add the Cost --
-        local cost = {"",tostring(distance), " ", {"gui-description.JumpCharge"}}
-        if MF.ent.surface ~= loc.surface then
-            cost = {"",tostring(distance), " ", {"gui-description.JumpCharge"}, " [color=purple]+1000[/color]"}
-        end
-        GAPI.addDualLabel(GUITable, infoTable, {"", {"gui-description.JumpCost"}, ":"}, cost, _mfOrange, _mfYellow)
-
-        ::continue::
-
-    end
-
-end
-
--- Update the Add Location --
-function GUI.updateAddLocation(GUITable)
-
-    -- Get all Variables --
-    local locFrame = GUITable.vars.AddLocFrame
-    local MF = getCurrentMF(GUITable.MFPlayer)
-
-    -- Check the Mobile Factory --
-    if MF.ent == nil or MF.ent.valid == false then
-        -- Add the Mobile Factory no found Label --
-        GAPI.addLabel(GUITable, "", locFrame, {"gui-description.MFNotFound"}, _mfRed)
+    if MF.ent == nil or not MF.ent.valid then
+        GAPI.addLabel(GUITable, "", markerPane, {"gui-description.MFNotFound"}, _mfRed)
         return
     end
 
-    -- Add the Location Label --
-    GAPI.addLabel(GUITable, "", locFrame, {"gui-description.AddLocationL"}, _mfOrange)
+    local markers = MF.jumpDriveObj:getMarkers()
+    local markerCount = 0
 
-    -- Create the Add Location Flow --
-    local addLocFlow = GAPI.addFlow(GUITable, "", locFrame, "horizontal")
+    for _, tag in pairs(markers) do
+        if tag ~= nil and tag.valid then
+            markerCount = markerCount + 1
 
-    -- Create the Add Location Text Field --
-    local textField = GAPI.addTextField(GUITable, "AddLocName", addLocFlow, "", {"gui-description.AddLocationTextTT"}, true)
-    textField.style.width = 125
+            local location = {
+                surface = tag.surface,
+                posX = tag.position.x,
+                posY = tag.position.y
+            }
+            local canTP = MF.jumpDriveObj:canTP(location)
+            local distance = math.ceil(Util.distance(MF.ent.position, {location.posX, location.posY}))
+            local plan = MF.jumpDriveObj:getJumpPlan(location)
 
-    -- Create the Add Location Filter --
-    GAPI.addFilter(GUITable, "AddLocFilter", addLocFlow, {"gui-description.AddLocationFilterTT"}, true, "recipe", 28)
+            local row = GAPI.addFrame(GUITable, "", markerPane, "horizontal")
+            row.style = "MFFrame1"
+            row.style.left_padding = 5
+            row.style.right_padding = 5
+            row.style.top_padding = 4
+            row.style.bottom_padding = 4
 
-    -- Create the Add Location Button --
-    GAPI.addButton(GUITable, "TP.GUI.AddLoc", addLocFlow, "PlusIcon", "PlusIcon", {"gui-description.AddLocationButtonTT"}, 28)
+            local iconFlow = GAPI.addFlow(GUITable, "", row, "vertical")
+            iconFlow.style.vertical_align = "center"
+            GAPI.addButton(GUITable, "TP.GUI.Loc,", iconFlow, "MFJDIcon", "MFJDIcon", {"gui-description.StartJump"}, 42, false, true, nil, nil, {loc = tag.tag_number})
 
-    -- Add Line --
-    GAPI.addLine(GUITable, "", locFrame, "horizontal")
+            local info = GAPI.addTable(GUITable, "", row, 1)
+            info.style.horizontally_stretchable = true
 
-    -- Add all Information --
-    GAPI.addLabel(GUITable, "", locFrame, {"gui-description.Info1"}, _mfWhite)
-    GAPI.addLabel(GUITable, "", locFrame, {"gui-description.Info2"}, _mfWhite)
-    GAPI.addLabel(GUITable, "", locFrame, {"gui-description.Info3"}, _mfWhite)
-    GAPI.addLabel(GUITable, "", locFrame, {"gui-description.Info4"}, _mfWhite)
+            GAPI.addLabel(GUITable, "", info, string.sub(tag.text or "", 1, 7) == "[MF-JD] " and string.sub(tag.text, 8) or tag.text or "Jump Marker", nil, "Jump Marker", false, nil, _mfLabelType.yellowTitle)
+            GAPI.addLabel(GUITable, "", info,
+                {"", tag.surface.name, " (", math.floor(tag.position.x), " ; ", math.floor(tag.position.y), ")"},
+                _mfWhite)
 
+            if plan ~= nil then
+                GAPI.addLabel(GUITable, "", info,
+                    {"", {"gui-description.JumpCost"}, ": ", Util.toRNumber(plan.energy), "J  •  ", distance, "m  •  ",
+                        {"gui-description.JumpPulseTime"}, ": ", string.format("%.2f", plan.duration), "s"},
+                    _mfWhite)
+            else
+                GAPI.addLabel(GUITable, "", info, {"gui-description.JDUnavailable"}, _mfRed)
+            end
+
+            local buttonFlow = GAPI.addFlow(GUITable, "", row, "vertical")
+            buttonFlow.style.vertical_align = "center"
+            local jumpButton = GAPI.addButton(GUITable, "TP.GUI.Loc,", buttonFlow,
+                canTP and "PlayIcon" or "MFJDIcon", canTP and "PlayIcon" or "MFJDIcon",
+                canTP and {"gui-description.StartJump"} or {"gui-description.JDUnavailable"}, 32, false, true, nil, nil, {loc = tag.tag_number})
+            jumpButton.enabled = canTP
+
+            GAPI.addButton(GUITable, "TP.GUI.RemoveLoc,", buttonFlow, "TrashIcon", "TrashIcon", {"gui-description.RemoveLocation"}, 28, false, true, nil, nil, {loc = tag.tag_number})
+        end
+    end
+
+    if markerCount == 0 then
+        GAPI.addLabel(GUITable, "", markerPane, {"gui-description.JDNoMarkers"}, _mfWhite)
+    end
 end
 
--- If the Player interacted with the GUI --
+-- Player interaction ---------------------------------------------------------
 function GUI.TPMFGUIInteraction(event, MFPlayer, currentMF)
+    local jumpDrive = currentMF.jumpDriveObj
 
-    -- Location Added --
-    if string.match(event.element.name, "TP.GUI.AddLoc") then
-        local GUITable = MFPlayer.GUI["MFTPGUI"]
-        if GUITable.vars.AddLocName ~= nil and GUITable.vars.AddLocName ~= "" then
-            local jumpDrive = currentMF.jumpDriveObj
-            jumpDrive:addLocation(GUITable.vars.AddLocName.text, GUITable.vars.AddLocFilter.elem_value)
-        end
+    if event.element.name == "TP.GUI.OpenMap" then
+        jumpDrive:openMap()
         return
     end
 
-    -- Start the Jump --
     if string.match(event.element.name, "TP.GUI.Loc") then
-        local jumpDrive = currentMF.jumpDriveObj
-        local location = event.element.tags.loc
-        -- Start the Jump --
-        if event.button == defines.mouse_button_type.left then
-            jumpDrive:jump(location)
+        local tagNumber = event.element.tags.loc
+        local tag = nil
+        for _, marker in pairs(jumpDrive:getMarkers()) do
+            if marker.tag_number == tagNumber then
+                tag = marker
+                break
+            end
         end
-        -- Remove a Location --
-        if event.button == defines.mouse_button_type.right then
-            jumpDrive:removeLocation(location)
+        if tag == nil then return end
+
+        local location = {
+            surface = tag.surface,
+            posX = tag.position.x,
+            posY = tag.position.y
+        }
+        if event.button == defines.mouse_button_type.left then
+            jumpDrive:jump(tag.text)
         end
         return
     end
 
+    if string.match(event.element.name, "TP.GUI.RemoveLoc") then
+        local tagNumber = event.element.tags.loc
+        for _, marker in pairs(jumpDrive:getMarkers()) do
+            if marker.tag_number == tagNumber then
+                marker.destroy()
+                break
+            end
+        end
+        GUI.updateAllGUIs(true)
+        return
+    end
 end
