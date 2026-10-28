@@ -115,3 +115,5 @@ _G.MFJumpMarker = {
     isJumpMarker = isJumpMarker,
     markerName = markerName
 }
+
+require("scripts/objects/jump-marker-gui.lua")
