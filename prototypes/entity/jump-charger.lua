@@ -1,98 +1,80 @@
----------------------------------- JUMP CHARGER ----------------------------------
+---------------------------------- JUMP CHARGER EQUIPMENT ----------------------------------
+--
+-- Jump Charger is a specialised capacitor for the Jump Drive.
+-- It is deliberately separate from ordinary equipment-grid batteries:
+-- normal batteries are general-purpose grid storage, while the Jump Charger
+-- is the dedicated high-capacity buffer that the Jump Drive consumes directly.
+--
+-- One charger stores 5 GJ and accepts up to 100 MW from the equipment grid.
+-- Multiple chargers may be installed; their capacities are added together.
 
--- Entity --
-local jcE = {}
-jcE.type = "container"
-jcE.name = "JumpCharger"
-jcE.icon = "__Mobile_Factory_Space_Age__/graphics/entity/JumpChargerI.png"
-jcE.icon_size = 128
-jcE.flags = {"placeable-neutral", "player-creation"}
-jcE.minable = {mining_time = 0.4, result = "JumpCharger"}
-jcE.max_health = 300
-jcE.corpse = "small-remnants"
-jcE.render_not_in_network_icon = false
-jcE.collision_box = {{-1.4, -1.4}, {1.4, 1.4}}
-jcE.selection_box = {{-1.5, -1.5}, {1.5, 1.5}}
-jcE.inventory_size = 0
-jcE.open_sound = { filename = "__base__/sound/wooden-chest-open.ogg" }
-jcE.close_sound = { filename = "__base__/sound/wooden-chest-close.ogg" }
-jcE.vehicle_impact_sound =  { filename = "__base__/sound/car-wood-impact.ogg", volume = 1.0 }
-jcE.picture =
-    {
-      layers =
-      {
-        {
-          filename = "__Mobile_Factory_Space_Age__/graphics/entity/JumpChargerG.png",
-          priority = "extra-high",
-          width = 600,
-          height = 600,
-          shift = {0,-1.7},
-          scale = 1/600*32*6.5,
-          draw_as_glow = true
-        },
-        {
-            filename = "__Mobile_Factory_Space_Age__/graphics/entity/JumpChargerE.png",
-            priority = "extra-high",
-            width = 600,
-            height = 600,
-            shift = {0,-1.7},
-            scale = 1/600*32*6.5
-        },
-        {
-            filename = "__Mobile_Factory_Space_Age__/graphics/entity/JumpChargerS.png",
-            priority = "high",
-            width = 600,
-            height = 600,
-            shift = {0,-1.7},
-            draw_as_shadow = true,
-            scale = 1/600*32*6.5
-        }
-      }
-    }
-    jcE.circuit_wire_connection_point =
-{
-	wire = {red={-0.05,-0.1}, green={0.05,-0.1}},
-	shadow = {red={-0.05,0}, green={0.05,0}}
+local chargerIcon = "__Mobile_Factory_Space_Age__/graphics/entity/JumpChargerI.png"
+
+local charger = {
+    type = "battery-equipment",
+    name = "JumpCharger",
+    sprite = {
+        filename = chargerIcon,
+        width = 128,
+        height = 128,
+        priority = "medium"
+    },
+    shape = {
+        width = 3,
+        height = 3,
+        type = "full"
+    },
+    energy_source = {
+        type = "electric",
+        buffer_capacity = "5GJ",
+        input_flow_limit = "100MW",
+        output_flow_limit = "0W",
+        usage_priority = "tertiary"
+    },
+    categories = {"mfEquipments"},
+    order = "d"
 }
-jcE.circuit_connector_sprites = nil
-jcE.circuit_wire_max_distance = 20
-data:extend{jcE}
 
--- Item --
-local jcI = {}
-jcI.type = "item"
-jcI.name = "JumpCharger"
-jcI.icon = "__Mobile_Factory_Space_Age__/graphics/entity/JumpChargerI.png"
-jcI.icon_size = 128
-jcI.place_result = "JumpCharger"
-jcI.subgroup = "MobileFactory"
-jcI.order = "z"
-jcI.stack_size = 10
-data:extend{jcI}
+data:extend{charger}
 
--- ============================================================================
--- РЕЦЕПТ И ТЕХНОЛОГИЯ JUMP CHARGER
--- ============================================================================
-
--- Старые рецепт и технология удалены.
---
--- Они были завязаны на старую экономику Mobile Factory:
--- CrystalizedCircuit
--- MachineFrame3
--- EnergyCore
--- DimensionalSample
--- DimensionalCrystal
---
--- Эти зависимости больше не должны проникать в новую версию мода.
---
--- TODO:
--- 1. Придумать новый рецепт Jump Charger.
--- 2. Определить, какие материалы нужны для его производства.
--- 3. Привязать рецепт к новой системе прогрессии.
--- 4. Определить, на каком этапе развития Mobile Factory он открывается.
--- 5. Вернуть технологию после проектирования новой системы исследований.
---
--- ВАЖНО:
--- Jump Charger не удалён как концепция.
--- Мы просто временно оставляем его без рецепта и технологии,
--- чтобы сначала разобраться с архитектурой Jump Drive.
+data:extend{
+    {
+        type = "item",
+        name = "JumpCharger",
+        icon = chargerIcon,
+        icon_size = 128,
+        subgroup = "MobileFactory",
+        order = "d",
+        stack_size = 1
+    },
+    {
+        type = "recipe",
+        name = "JumpCharger",
+        enabled = false,
+        energy_required = 15,
+        ingredients = {
+            {type = "item", name = "steel-plate", amount = 100},
+            {type = "item", name = "processing-unit", amount = 50},
+            {type = "item", name = "battery", amount = 50}
+        },
+        results = {{type = "item", name = "JumpCharger", amount = 1}}
+    },
+    {
+        type = "technology",
+        name = "JumpCharger",
+        icon = chargerIcon,
+        icon_size = 128,
+        unit = {
+            count = 100,
+            time = 60,
+            ingredients = {
+                {"space-science-pack", 1}
+            }
+        },
+        prerequisites = {"JumpDrive"},
+        effects = {{
+            type = "unlock-recipe",
+            recipe = "JumpCharger"
+        }}
+    }
+}
