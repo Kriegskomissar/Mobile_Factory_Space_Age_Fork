@@ -11,6 +11,8 @@ require("scripts/game-update.lua")
 require("scripts/events.lua")
 require("scripts/objects/mobile-factory.lua")
 require("scripts/objects/jump-drive.lua")
+require("scripts/objects/jump-markers.lua")
+require("scripts/objects/jump-marker-events.lua")
 require("scripts/objects/jump-charger.lua")
 require("scripts/objects/MFPlayer.lua")
 
@@ -25,6 +27,7 @@ function onInit()
     storage.useVanillaChooseElem = storage.useVanillaChooseElem or false
     storage.floorIsLavaActivated = storage.floorIsLavaActivated or false
     storage.objectsTable = storage.objectsTable or {}
+    storage.jumpMarkerMode = storage.jumpMarkerMode or {}
 
     createTableList()
 
