@@ -7,8 +7,10 @@
 --
 -- One charger stores 5 GJ and accepts up to 100 MW from the equipment grid.
 -- Multiple chargers may be installed; their capacities are added together.
+--
+-- Each charger occupies a 2x5 block in the equipment grid.
 
-local chargerIcon = "__Mobile_Factory_Space_Age__/graphics/entity/JumpChargerI.png"
+local chargerIcon = "__Mobile_Factory_Space_Age__/graphics/entity/JumpChargerE.png"
 
 local charger = {
     type = "battery-equipment",
@@ -20,8 +22,8 @@ local charger = {
         priority = "medium"
     },
     shape = {
-        width = 3,
-        height = 3,
+        width = 2,
+        height = 5,
         type = "full"
     },
     energy_source = {
