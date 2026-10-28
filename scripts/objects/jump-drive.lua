@@ -295,3 +295,163 @@ function JD:jump(locationName)
 
     self.MF:TPMobileFactoryPart1(location)
 end
+
+-- -----------------------------------------------------------------------------
+-- TELEPORTATION OVERRIDE
+-- -----------------------------------------------------------------------------
+-- The old MF implementation used a fixed two-second delay and removed charge
+-- through Internal Energy. That architecture is gone. These overrides keep
+-- the existing GUI/event flow while making the actual teleport duration equal
+-- to the Jump Drive's calculated pulse time.
+
+function MF:TPMobileFactoryPart1(location)
+    local player = getPlayer(self.playerIndex)
+
+    if location.surface == nil or game.surfaces[location.surface.name] == nil then
+        player.print({"", {"gui-description.TPSurfaceNoFound"}})
+        return
+    end
+
+    if self.ent == nil or self.ent.valid == false then
+        player.print({"", {"gui-description.MFLostOrDestroyed"}})
+        return
+    end
+
+    if self.ent.get_driver() == nil then
+        player.print({"", {"gui-description.TPNoDriver"}})
+        return
+    end
+
+    local tpCoords = location.surface.find_non_colliding_position(
+        self.ent.name,
+        {location.posX, location.posY},
+        10,
+        0.1,
+        false
+    )
+
+    if tpCoords == nil then
+        player.print({"", {"gui-description.TPObstruction"}})
+        return
+    end
+
+    local exactLocation = {
+        surface = location.surface,
+        posX = tpCoords.x,
+        posY = tpCoords.y,
+        filter = location.filter
+    }
+
+    -- Recalculate after resolving the exact destination position.
+    local plan = self.jumpDriveObj:getJumpPlan(exactLocation)
+    if plan == nil then
+        return
+    end
+
+    self.onTP = true
+    self.tpCurrentTick = game.tick
+    self.tpLocation = exactLocation
+    self.tpPlan = plan
+
+    -- The old MF:update() wakes TP after 30 ticks. Offset the stored start tick
+    -- so that its existing condition fires exactly at the calculated duration.
+    self.tpCurrentTick = game.tick - math.max(plan.durationTicks - 30, 0)
+
+    local animationTicks = math.max(plan.durationTicks * 2, 60)
+
+    local animation1 = rendering.draw_animation {
+        animation = "SimpleTPAn",
+        animation_speed = 0.5,
+        render_layer = 131,
+        x_scale = 4,
+        y_scale = 3.5,
+        target = {self.ent.position.x, self.ent.position.y - 0.7},
+        surface = self.ent.surface,
+        time_to_live = animationTicks
+    }
+    Util.resetAnimation(animation1, math.max(plan.durationTicks, 1))
+
+    local animation2 = rendering.draw_animation {
+        animation = "SimpleTPAn",
+        animation_speed = 0.5,
+        render_layer = 131,
+        x_scale = 4,
+        y_scale = 3.5,
+        target = {exactLocation.posX, exactLocation.posY - 0.7},
+        surface = exactLocation.surface,
+        time_to_live = animationTicks
+    }
+    Util.resetAnimation(animation2, math.max(plan.durationTicks, 1))
+
+    self.ent.surface.play_sound {
+        path = "MFSimpleTP",
+        position = self.ent.position
+    }
+    self.ent.surface.play_sound {
+        path = "MFSimpleTP",
+        position = player.position
+    }
+
+    local MFPlayer = getMFPlayer(self.playerIndex)
+    if MFPlayer.GUI[_mfGUIName.TPGUI] ~= nil then
+        MFPlayer.GUI[_mfGUIName.TPGUI].gui.destroy()
+        MFPlayer.GUI[_mfGUIName.TPGUI] = nil
+    end
+end
+
+function MF:TPMobileFactoryPart2()
+    local player = getPlayer(self.playerIndex)
+
+    if self.tpLocation == nil or self.tpLocation.surface == nil
+        or game.surfaces[self.tpLocation.surface.name] == nil then
+        player.print({"", {"gui-description.TPSurfaceNoFound"}})
+        self.onTP = false
+        self.tpCurrentTick = 0
+        self.tpLocation = nil
+        self.tpPlan = nil
+        return
+    end
+
+    if self.ent == nil or self.ent.valid == false then
+        player.print({"", {"gui-description.MFLostOrDestroyed"}})
+        self.onTP = false
+        self.tpCurrentTick = 0
+        self.tpLocation = nil
+        self.tpPlan = nil
+        return
+    end
+
+    if self.ent.get_driver() == nil then
+        player.print({"", {"gui-description.TPNoDriver"}})
+        self.onTP = false
+        self.tpCurrentTick = 0
+        self.tpLocation = nil
+        self.tpPlan = nil
+        return
+    end
+
+    -- Re-check the stored plan immediately before the jump. If equipment was
+    -- removed or discharged while the animation was running, the jump aborts.
+    if self.tpPlan == nil or not self.jumpDriveObj:consumeCharge(self.tpPlan.energy) then
+        player.print({"gui-description.JDChargeLost"})
+        self.onTP = false
+        self.tpCurrentTick = 0
+        self.tpLocation = nil
+        self.tpPlan = nil
+        return
+    end
+
+    self.ent.teleport(
+        {self.tpLocation.posX, self.tpLocation.posY},
+        self.tpLocation.surface
+    )
+
+    self.lastSurface = self.ent.surface
+    self.lastPosX = self.ent.position.x
+    self.lastPosY = self.ent.position.y
+
+    self.onTP = false
+    self.tpCurrentTick = 0
+    self.tpLocation = nil
+    self.tpPlan = nil
+end
