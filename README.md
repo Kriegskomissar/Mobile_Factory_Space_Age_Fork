@@ -1,22 +1,30 @@
-# Mobile Factory Space Age — Fork
+# Mobile factories: On-board production
 
-A stripped-down fork focused on one idea: a large tank with a Factorissimo-like interior.
+A standalone Factorio 2.1 + Space Age mod focused on one idea: large mobile factories with Factorissimo-like interiors and on-board production.
 
 ## Design goals
 
 - Keep the mobile factory/tank fantasy.
-- Remove the original mod's separate resource, energy, logistics and production economies where Factorio mechanics can do the job directly.
+- Use ordinary Factorio mechanics wherever possible instead of recreating a separate economy.
 - Support multiple mobile factories simultaneously.
-- Keep the Control Room, internal factory surface, deployment/repack flow, GUI, player state and update/event infrastructure where useful.
+- Give each factory tier its own interior space, inventory access and terminal.
 - Keep the Jump Drive as a special mobility system.
 
-## Planned factory variants
+## Factory variants
 
 - Small Factory — starter mobile factory with a large internal inventory and basic armament.
-- Super Factory — larger factory with equipment grid and personal logistics.
-- Mega Factory — largest factory with its own internal nuclear power system.
+- Super Factory — larger factory with a 30x30 equipment grid, personal logistics and additional armament.
+- Mega Factory — largest factory with a 30x30 equipment grid and its own internal nuclear Energy Core.
 - Harvester — separate mobile resource-harvesting vehicle.
+
+## Technology progression
+
+- Small Factory follows the vanilla Tank technology.
+- Super Factory requires Small Factory and Chemical Science.
+- Mega Factory requires Super Factory and Metallurgic Science.
+- Jump Charger requires Personal Battery technology.
+- Jump Drive Mk.I → Mk.II → Mk.III follows the rocket-silo progression independently of the factory tiers.
 
 ## Development principle
 
-The fork should provide a mobile factory, not a second Factorio economy. New subsystems should justify their existence and remain removable without destabilizing the core.
+The project should provide a mobile factory, not a second Factorio economy. New subsystems should justify their existence and remain removable without destabilizing the core.
