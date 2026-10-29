@@ -44,7 +44,8 @@ function JD:findMarker(name)
 end
 
 function JD:addLocation(name, filter)
-    -- Compatibility entry point. Placement itself is now map-only.
+    -- Marker placement is deliberately map-only. The terminal button opens
+    -- remote map mode; the player creates and names the native chart tag there.
     if name == nil or name == "" then return end
 
     local player = getPlayer(self.MF.playerIndex)
@@ -56,6 +57,7 @@ function JD:addLocation(name, filter)
     end
 
     player.print({"gui-description.JDMarkerMapOnly"})
+    self:openMap()
 end
 
 function JD:removeLocation(name)
