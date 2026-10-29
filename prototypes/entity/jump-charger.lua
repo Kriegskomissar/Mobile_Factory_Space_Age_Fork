@@ -1,14 +1,5 @@
----------------------------------- JUMP CHARGER EQUIPMENT ----------------------------------
---
--- Jump Charger is a specialised capacitor for the Jump Drive.
--- It is deliberately separate from ordinary equipment-grid batteries:
--- normal batteries are general-purpose grid storage, while the Jump Charger
--- is the dedicated high-capacity buffer that the Jump Drive consumes directly.
---
--- One charger stores 5 GJ and accepts up to 100 MW from the equipment grid.
--- Multiple chargers may be installed; their capacities are added together.
---
--- Each charger occupies a 2x5 block in the equipment grid.
+---------------------------------- JUMP CHARGER EQUIPMENT ------------------
+-- Dedicated capacitor for the Jump Drive. Multiple chargers are additive.
 
 local chargerIcon = "__Mobile_Factories_Onboard_Production__/graphics/entity/JumpChargerE.png"
 
@@ -21,11 +12,7 @@ local charger = {
         height = 128,
         priority = "medium"
     },
-    shape = {
-        width = 2,
-        height = 5,
-        type = "full"
-    },
+    shape = {width = 2, height = 5, type = "full"},
     energy_source = {
         type = "electric",
         buffer_capacity = "5GJ",
@@ -45,9 +32,11 @@ data:extend{
         name = "JumpCharger",
         icon = chargerIcon,
         icon_size = 128,
+        place_as_equipment_result = "JumpCharger",
         subgroup = "MobileFactory",
         order = "d",
-        stack_size = 1
+        stack_size = 1,
+        weight = 100 * kg
     },
     {
         type = "recipe",
@@ -70,18 +59,9 @@ data:extend{
         unit = {
             count = 100,
             time = 60,
-            ingredients = {
-                {"space-science-pack", 1}
-            }
+            ingredients = {{"space-science-pack", 1}}
         },
-        -- The technology graph gate is the vanilla Personal Battery equipment.
-        -- The Jump Charger does not require Jump Drive research as a graph
-        -- prerequisite; it is independently available once personal battery
-        -- equipment has been researched.
         prerequisites = {"battery-equipment"},
-        effects = {{
-            type = "unlock-recipe",
-            recipe = "JumpCharger"
-        }}
+        effects = {{type = "unlock-recipe", recipe = "JumpCharger"}}
     }
 }
