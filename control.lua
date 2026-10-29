@@ -13,18 +13,43 @@ require("scripts/objects/jump-markers.lua")
 require("scripts/objects/jump-marker-events.lua")
 require("scripts/objects/MFPlayer.lua")
 
--- Runtime modules historically used mfCall to turn an exception into a
--- boolean failure result. Keep that small wrapper here now that the legacy
--- extension module is gone.
 function mfCall(fn, ...)
     if fn == nil then return true end
-    local ok = pcall(fn, ...)
+    local ok, err = pcall(fn, ...)
+    if not ok then log("Mobile Factory runtime error: " .. tostring(err)) end
     return not ok
+end
+
+local FACTORY_NAMES = {SmallFactory = true, SuperFactory = true, MegaFactory = true}
+
+local function migrateFactoryTable()
+    storage.MFTable = storage.MFTable or {}
+    storage.entsTable = storage.entsTable or {}
+    storage.playersTable = storage.playersTable or {}
+
+    -- Versions before 1.1.0 stored one MF object under the player's name.
+    -- Re-key every surviving object by its actual entity unit_number.
+    local legacy = {}
+    for key, MF in pairs(storage.MFTable) do
+        if type(key) == "string" then table.insert(legacy, {key = key, MF = MF}) end
+    end
+    for _, entry in pairs(legacy) do
+        local MF = entry.MF
+        if MF and MF.ent and MF.ent.valid and MF.ent.unit_number then
+            local unit = MF.ent.unit_number
+            MF.player = MF.player ~= "" and MF.player or entry.key
+            MF.playerIndex = MF.playerIndex or (game.players[MF.player] and game.players[MF.player].index)
+            storage.MFTable[unit] = MF
+            storage.entsTable[unit] = MF
+            storage.MFTable[entry.key] = nil
+        else
+            storage.MFTable[entry.key] = nil
+        end
+    end
 end
 
 function onInit()
     storage.allowMigration = (next(storage) ~= nil)
-
     storage.entsTable = storage.entsTable or {}
     storage.upsysTickTable = storage.upsysTickTable or {}
     storage.entsUpPerTick = storage.entsUpPerTick or 10
@@ -35,40 +60,28 @@ function onInit()
     storage.jumpMarkerMode = storage.jumpMarkerMode or {}
 
     createTableList()
-
-    for _, obj in pairs(storage.objTable or {}) do
-        if obj.tableName and obj.tag and _G[obj.tag] then
-            if _G[obj.tag].refresh then
-                for _, entry in pairs(storage[obj.tableName] or {}) do
-                    entry:refresh()
-                end
-            end
-            if _G[obj.tag].validate then
-                for _, entry in pairs(storage[obj.tableName] or {}) do
-                    entry:validate()
-                end
-            end
-        end
-    end
-
-    rendering.clear("Mobile_Factories_Onboard_Production")
+    migrateFactoryTable()
 
     storage.playersTable = storage.playersTable or {}
     for _, player in pairs(game.players) do
         Event.initPlayer({player_index = player.index})
     end
 
-    for _, MFPlayer in pairs(storage.playersTable) do
-        if MFPlayer.ent ~= nil and MFPlayer.ent.valid == true then
-            GUI.createMFMainGUI(MFPlayer.ent)
+    for _, MF in pairs(storage.MFTable or {}) do
+        if type(MF) == "table" and MF.ent and MF.ent.valid then
+            MF:refresh()
+            if MF.fS == nil or not MF.fS.valid then MFInterior.create(MF) end
+            if MF.playerIndex and game.players[MF.playerIndex] then
+                storage.playersTable[game.players[MF.playerIndex].name].currentMF = MF
+            end
         end
     end
 
+    rendering.clear("Mobile_Factories_Onboard_Production")
+
     for k, obj in pairs(storage.objectsTable) do
         if obj.meta ~= nil and _G[obj.meta] ~= nil and _G[obj.meta].valid ~= nil then
-            if _G[obj.meta].valid(obj) == false then
-                storage.objectsTable[k] = nil
-            end
+            if _G[obj.meta].valid(obj) == false then storage.objectsTable[k] = nil end
         else
             storage.objectsTable[k] = nil
         end
@@ -108,120 +121,46 @@ function initAPlayer(event)
         local player = event.player_index and game.players[event.player_index]
         if player and player.name then
             game.print({"gui-description.initAPlayer_PlayerInitFailed", player.name})
-        else
-            game.print({"gui-description.initAPlayer_PlayerInitFailed", {"gui-description.Unknown"}})
         end
     end
 end
 
-function onPlayerDriveStatChange(event)
-    mfCall(Event.playerDriveStatChange, event)
-end
-
-function onTick(event)
-    mfCall(Event.tick, event)
-end
-
-function onEntityDamaged(event)
-    mfCall(Event.entityDamaged, event)
-end
+function onPlayerDriveStatChange(event) mfCall(Event.playerDriveStatChange, event) end
+function onTick(event) mfCall(Event.tick, event) end
+function onEntityDamaged(event) mfCall(Event.entityDamaged, event) end
 
 function whenSomethingWasPlaced(event)
     if mfCall(Event.somethingWasPlaced, event) == true then
         game.print({"gui-description.whenSomethingWasPlaced_Failed"})
         local entity = event.entity or event.destination
-        if entity ~= nil and entity.valid == true then
-            entity.destroy()
-        end
+        if entity ~= nil and entity.valid == true then entity.destroy() end
     end
 end
 
-function whenSomethingWasCloned(event)
-    mfCall(Event.somethingWasCloned, event)
-end
-
-function whenSomethingWasRemoved(event)
-    mfCall(Event.somethingWasRemoved, event)
-end
+function whenSomethingWasCloned(event) mfCall(Event.somethingWasCloned, event) end
+function whenSomethingWasRemoved(event) mfCall(Event.somethingWasRemoved, event) end
 
 function onGhostPlacedByDie(event)
     if mfCall(Event.ghostPlacedByDie, event) == true then
         game.print({"gui-description.onGhostPlacedByDie_Failed"})
-        if event.ghost ~= nil and event.ghost.valid == true then
-            event.ghost.destroy()
-        end
+        if event.ghost ~= nil and event.ghost.valid == true then event.ghost.destroy() end
     end
 end
 
-function onGuiOpened(event)
-    mfCall(GUI.guiOpened, event)
-end
-
-function onGuiClosed(event)
-    mfCall(GUI.guiClosed, event)
-end
-
-function onButtonClicked(event)
-    local player = getPlayer(event.player_index)
-    if event.element and event.element.valid and event.element.name == "MFErrorContinue" then
-        local errorWindow = player and player.gui.screen.MFBaseErrorWindows
-        if errorWindow and errorWindow.valid then
-            errorWindow.destroy()
-        end
-        return
-    end
-    if mfCall(GUI.buttonClicked, event) == true then
-        if player then player.print({"gui-description.updatingGUI_Failed"}) end
-        mfCall(Event.clearGUI, event)
-    end
-end
-
-function onGuiElemChanged(event)
-    if mfCall(GUI.onGuiElemChanged, event) == true then
-        getPlayer(event.player_index).print({"gui-description.updatingGUI_Failed"})
-        mfCall(Event.clearGUI, event)
-    end
-end
-
-function onTechnologyFinished(event)
-    mfCall(Event.technologyFinished, event)
-end
-
-function onSelectedEntityChanged(event)
-    mfCall(Event.selectedEntityChanged, event)
-end
-
-function onSettingsPasted(event)
-    mfCall(Event.settingsPasted, event)
-end
-
-function onForceCreated(event)
-    mfCall(Event.forceCreated, event)
-end
-
-function onPlayerChangedForce(event)
-    mfCall(Event.playerChangedForce, event)
-end
-
-function onPlayerSetupBlueprint(event)
-    mfCall(Event.playerSetupBlueprint, event)
-end
-
-function onStringTranslated(event)
-    mfCall(GUI.onStringTranslated, event)
-end
-
-function onEntityRotated(event)
-    mfCall(Event.entityRotated, event)
-end
-
-function onShortcutPressed(event)
-    mfCall(Event.onShortcut, event)
-end
-
-function clearAllGUI(event)
-    mfCall(Event.clearGUI, event)
-end
+function onGuiOpened(event) mfCall(GUI.guiOpened, event) end
+function onGuiClosed(event) mfCall(GUI.guiClosed, event) end
+function onButtonClicked(event) mfCall(GUI.buttonClicked, event) end
+function onGuiElemChanged(event) mfCall(GUI.onGuiElemChanged, event) end
+function onTechnologyFinished(event) mfCall(Event.technologyFinished, event) end
+function onSelectedEntityChanged(event) mfCall(Event.selectedEntityChanged, event) end
+function onSettingsPasted(event) mfCall(Event.settingsPasted, event) end
+function onForceCreated(event) mfCall(Event.forceCreated, event) end
+function onPlayerChangedForce(event) mfCall(Event.playerChangedForce, event) end
+function onPlayerSetupBlueprint(event) mfCall(Event.playerSetupBlueprint, event) end
+function onStringTranslated(event) mfCall(GUI.onStringTranslated, event) end
+function onEntityRotated(event) mfCall(Event.entityRotated, event) end
+function onShortcutPressed(event) mfCall(Event.onShortcut, event) end
+function clearAllGUI(event) mfCall(Event.clearGUI, event) end
 
 script.on_init(onInit)
 script.on_configuration_changed(onInit)
@@ -262,8 +201,5 @@ script.on_event(defines.events.on_force_created, onForceCreated)
 script.on_event(defines.events.on_player_changed_force, onPlayerChangedForce)
 script.on_event(defines.events.on_player_setup_blueprint, onPlayerSetupBlueprint)
 script.on_event(defines.events.on_string_translated, onStringTranslated)
-script.on_event(defines.events.on_player_rotated_entity, onEntityRotated)
-script.on_event("OpenTTGUI", onShortcutPressed)
-script.on_event("CloseGUI", onShortcutPressed)
-
-commands.add_command("MFClearGUI", "Clean all Mobile Factory GUIs", clearAllGUI)
+script.on_event(defines.events.on_entity_rotated, onEntityRotated)
+script.on_event(defines.events.on_lua_shortcut, onShortcutPressed)
