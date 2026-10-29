@@ -135,13 +135,13 @@ mf.turret_animation = {
     }, {
         filename = "__base__/graphics/entity/tank/tank-turret-shadow.png",
         priority = "low",
-        line_length = 8,
         width = 193,
         height = 134,
         frame_count = 1,
         draw_as_shadow = true,
         direction_count = 64,
         shift = util.by_pixel(51.25, 6.5),
+        animation_speed = 8,
         scale = 1
     }}
 }
@@ -161,18 +161,23 @@ mfI.weight = 1 * tons
 data:extend{mfI}
 
 -- Create the Mobile Factory Recipe --
--- Новая версия больше не использует DimensionalOre, MachineFrame или
--- другие материалы старой экономики. Производство опирается на обычные
--- ресурсы Factorio.
+-- Production uses ordinary Factorio materials and deliberately represents
+-- the factory as a large assembled vehicle rather than a normal machine.
 local mfR = {}
 mfR.type = "recipe"
 mfR.name = "SmallFactory"
 mfR.enabled = false
-mfR.energy_required = 10
+mfR.energy_required = 30
 mfR.ingredients = {
-    {type = "item", name = "steel-plate", amount = 100},
-    {type = "item", name = "processing-unit", amount = 50},
-    {type = "item", name = "engine-unit", amount = 20}
+    {type = "item", name = "tank", amount = 5},
+    {type = "item", name = "iron-gear-wheel", amount = 1500},
+    {type = "item", name = "electronic-circuit", amount = 100},
+    {type = "item", name = "engine-unit", amount = 200},
+    {type = "item", name = "steel-plate", amount = 200},
+    {type = "item", name = "medium-electric-pole", amount = 10},
+    {type = "item", name = "car", amount = 1},
+    {type = "item", name = "stone-brick", amount = 500},
+    {type = "item", name = "iron-chest", amount = 20}
 }
 mfR.results = {{
     type = "item",
