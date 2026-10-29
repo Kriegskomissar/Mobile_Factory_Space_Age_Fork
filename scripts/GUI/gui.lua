@@ -150,7 +150,7 @@ end
 
 function GUI.onGuiElemChanged(event)
     if event.element == nil or event.element.valid == false then return end
-    if event.element.get_mod() ~= "Mobile_Factory_Space_Age" then return end
+    if event.element.get_mod() ~= "Mobile_Factories_Onboard_Production" then return end
     local player = getPlayer(event.player_index)
     local MFPlayer = getMFPlayer(event.player_index)
     if player == nil or MFPlayer == nil then return end
