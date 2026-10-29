@@ -26,8 +26,6 @@ terminal.map_color = {0.25, 0.25, 0.25}
 data:extend{terminal}
 
 -- This is the only electrical connection point for the factory interior.
--- It is intentionally an ordinary substation-sized pole: the player must be
--- inside the Mobile Factory to connect wires to it. There is no outside pole.
 local power = table.deepcopy(data.raw["electric-pole"].substation)
 power.name = "mf-interior-power-interface"
 power.icon = "__base__/graphics/icons/substation.png"
@@ -41,8 +39,6 @@ power.auto_connect_up_to_n_wires = 0
 power.selection_priority = 200
 data:extend{power}
 
--- Decorative inventory wall: a continuous steel-chest perimeter represents
--- the Mobile Factory's internal inventory.
 local inventoryWall = {
     type = "simple-entity",
     name = "mf-interior-inventory-wall",
@@ -52,19 +48,13 @@ local inventoryWall = {
     collision_box = {{0,0},{0,0}},
     selection_box = {{0,0},{0,0}},
     render_layer = "object",
-    picture = {
-        filename = "__base__/graphics/entity/steel-chest/steel-chest.png",
-        priority = "extra-high",
-        width = 48,
-        height = 34,
-        shift = {0.2, 0}
-    }
+    picture = {filename = "__base__/graphics/entity/steel-chest/steel-chest.png", priority = "extra-high", width = 48, height = 34, shift = {0.2, 0}}
 }
 data:extend{inventoryWall}
 
--- Mega Factory energy core. The visible shell reuses the vanilla reactor
--- prototype's graphics, while a hidden burner-generator supplies electricity.
--- Fuel is consumed directly from nuclear fuel cells: no heat/steam loop.
+-- Mega Factory energy core. The visible shell reuses the vanilla nuclear
+-- reactor graphics; the actual power conversion is a direct nuclear-fuel ->
+-- electricity burner-generator, with no heat or steam loop.
 local reactorShell = table.deepcopy(data.raw.reactor["nuclear-reactor"])
 reactorShell.name = "mf-energy-core-reactor-shell"
 reactorShell.type = "simple-entity-with-owner"
@@ -99,18 +89,12 @@ local coreGenerator = {
     name = "mf-energy-core-generator",
     icon = "__base__/graphics/icons/nuclear-reactor.png",
     icon_size = 64,
-    flags = {"placeable-off-grid", "not-deconstructable", "not-blueprintable", "not-upgradable", "not-repairable", "not-on-map"},
-    selectable_in_game = false,
-    collision_box = {{0,0},{0,0}},
-    selection_box = {{0,0},{0,0}},
-    burner = {
-        type = "burner",
-        fuel_inventory_size = 1,
-        fuel_categories = {"nuclear"},
-        effectivity = 1,
-        auto_refuel = false,
-        emissions_per_minute = {}
-    },
+    flags = {"placeable-off-grid", "not-deconstructable", "not-blueprintable", "not-upgradable", "not-repairable"},
+    selectable_in_game = true,
+    selection_priority = 250,
+    collision_box = {{-2.4, -2.4}, {2.4, 2.4}},
+    selection_box = {{-2.5, -2.5}, {2.5, 2.5}},
+    burner = {type = "burner", fuel_inventory_size = 1, fuel_categories = {"nuclear"}, effectivity = 1, auto_refuel = false, emissions_per_minute = {}},
     energy_source = {type = "electric", usage_priority = "primary-output", output_flow_limit = "100MW"},
     max_power_output = "100MW",
     animation = emptyAnimation,
