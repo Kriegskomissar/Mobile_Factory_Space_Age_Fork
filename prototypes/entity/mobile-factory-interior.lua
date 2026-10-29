@@ -25,6 +25,9 @@ terminal.selection_box = {{-1.2, -1.4}, {1.2, 1.4}}
 terminal.map_color = {0.25, 0.25, 0.25}
 data:extend{terminal}
 
+-- This is the only electrical connection point for the factory interior.
+-- It is intentionally an ordinary substation-sized pole: the player must be
+-- inside the Mobile Factory to connect wires to it. There is no outside pole.
 local power = table.deepcopy(data.raw["electric-pole"].substation)
 power.name = "mf-interior-power-interface"
 power.icon = "__base__/graphics/icons/substation.png"
@@ -38,24 +41,8 @@ power.auto_connect_up_to_n_wires = 0
 power.selection_priority = 200
 data:extend{power}
 
-local energy = {
-    type = "electric-energy-interface",
-    name = "mf-interior-energy-interface",
-    icon = "__base__/graphics/icons/accumulator.png",
-    icon_size = 64,
-    flags = {"placeable-off-grid", "not-deconstructable", "not-blueprintable", "not-upgradable", "not-repairable", "not-on-map"},
-    selectable_in_game = false,
-    collision_box = {{-0.5, -0.5}, {0.5, 0.5}},
-    selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
-    energy_source = {type="electric", buffer_capacity="10GJ", usage_priority="tertiary", input_flow_limit="100MW", output_flow_limit="100MW"},
-    energy_production = "0W",
-    energy_usage = "0W",
-    picture = {filename="__core__/graphics/empty.png", width=1, height=1}
-}
-data:extend{energy}
-
--- Decorative inventory wall: the perimeter is literally rendered as a
--- continuous line of steel chests, representing the Mobile Factory inventory.
+-- Decorative inventory wall: a continuous steel-chest perimeter represents
+-- the Mobile Factory's internal inventory.
 local inventoryWall = {
     type = "simple-entity",
     name = "mf-interior-inventory-wall",
@@ -74,3 +61,74 @@ local inventoryWall = {
     }
 }
 data:extend{inventoryWall}
+
+-- Mega Factory energy core. The visible shell reuses the vanilla reactor
+-- prototype's graphics, while a hidden burner-generator supplies electricity.
+-- Fuel is consumed directly from nuclear fuel cells: no heat/steam loop.
+local reactorShell = table.deepcopy(data.raw.reactor["nuclear-reactor"])
+reactorShell.name = "mf-energy-core-reactor-shell"
+reactorShell.type = "simple-entity-with-owner"
+reactorShell.flags = {"placeable-off-grid", "not-deconstructable", "not-blueprintable", "not-upgradable", "not-repairable"}
+reactorShell.minable = nil
+reactorShell.destructible = false
+reactorShell.selectable_in_game = false
+reactorShell.collision_mask = {layers = {}}
+reactorShell.selection_box = {{-2.4, -2.4}, {2.4, 2.4}}
+reactorShell.collision_box = {{0, 0}, {0, 0}}
+reactorShell.energy_source = {type = "void"}
+reactorShell.consumption = "0W"
+reactorShell.heat_buffer = nil
+reactorShell.working_light_picture = nil
+reactorShell.neighbour_bonus = nil
+reactorShell.neighbour_connectable = nil
+reactorShell.connection_patches_connected = nil
+reactorShell.connection_patches_disconnected = nil
+reactorShell.circuit_connector = nil
+reactorShell.circuit_wire_max_distance = nil
+data:extend{reactorShell}
+
+local emptyAnimation = {
+    north = {filename = "__core__/graphics/empty.png", width = 1, height = 1, frame_count = 1},
+    east = {filename = "__core__/graphics/empty.png", width = 1, height = 1, frame_count = 1},
+    south = {filename = "__core__/graphics/empty.png", width = 1, height = 1, frame_count = 1},
+    west = {filename = "__core__/graphics/empty.png", width = 1, height = 1, frame_count = 1}
+}
+
+local coreGenerator = {
+    type = "burner-generator",
+    name = "mf-energy-core-generator",
+    icon = "__base__/graphics/icons/nuclear-reactor.png",
+    icon_size = 64,
+    flags = {"placeable-off-grid", "not-deconstructable", "not-blueprintable", "not-upgradable", "not-repairable", "not-on-map"},
+    selectable_in_game = false,
+    collision_box = {{0,0},{0,0}},
+    selection_box = {{0,0},{0,0}},
+    burner = {
+        type = "burner",
+        fuel_inventory_size = 1,
+        fuel_categories = {"nuclear"},
+        effectivity = 1,
+        auto_refuel = false,
+        emissions_per_minute = {}
+    },
+    energy_source = {type = "electric", usage_priority = "primary-output", output_flow_limit = "100MW"},
+    max_power_output = "100MW",
+    animation = emptyAnimation,
+    idle_animation = emptyAnimation
+}
+data:extend{coreGenerator}
+
+-- Vanilla accumulator, enlarged to reactor footprint, with a 100 MJ buffer.
+local coreAccumulator = table.deepcopy(data.raw.accumulator.accumulator)
+coreAccumulator.name = "mf-energy-core-accumulator"
+coreAccumulator.icon = "__base__/graphics/icons/accumulator.png"
+coreAccumulator.minable = nil
+coreAccumulator.flags = {"placeable-off-grid", "not-deconstructable", "not-blueprintable", "not-upgradable", "not-repairable"}
+coreAccumulator.destructible = false
+coreAccumulator.selectable_in_game = false
+coreAccumulator.collision_box = {{-2.4, -2.4}, {2.4, 2.4}}
+coreAccumulator.selection_box = {{-2.5, -2.5}, {2.5, 2.5}}
+coreAccumulator.energy_source.buffer_capacity = "100MJ"
+coreAccumulator.energy_source.input_flow_limit = "100MW"
+coreAccumulator.energy_source.output_flow_limit = "100MW"
+data:extend{coreAccumulator}
