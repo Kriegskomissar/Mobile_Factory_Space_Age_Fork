@@ -135,6 +135,7 @@ mf.turret_animation = {
     }, {
         filename = "__base__/graphics/entity/tank/tank-turret-shadow.png",
         priority = "low",
+        line_length = 8,
         width = 193,
         height = 134,
         frame_count = 1,
