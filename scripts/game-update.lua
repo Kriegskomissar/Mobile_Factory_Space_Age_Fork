@@ -1,4 +1,3 @@
-require("utils/players-teleportation.lua")
 require("utils/surface.lua")
 require("utils/functions.lua")
 require("scripts/update-system.lua")
@@ -31,10 +30,8 @@ function updateFloorIsLava()
 end
 
 -- Interior lighting currently has no separate runtime power object.
--- The future factory power network will control this directly.
 function updateIndoorLights()
     for _, MF in pairs(storage.MFTable or {}) do
         if MF.fS and MF.fS.valid then MF.fS.daytime = 0 end
-        if MF.ccS and MF.ccS.valid then MF.ccS.daytime = 0 end
     end
 end
