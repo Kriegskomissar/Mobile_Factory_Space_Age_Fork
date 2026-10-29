@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.1
+Date: 2026-10-30
+  Bugfixes:
+    - Fixed Factorio 2.1 prototype compatibility by removing obsolete max_speed arithmetic from Super and Mega Factory definitions.
+    - Rebuilt the release package from the corrected 2.1-compatible prototype definitions.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.1.0
 Date: 2026-10-30
   Major overhaul:
