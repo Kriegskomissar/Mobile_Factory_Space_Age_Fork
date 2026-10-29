@@ -19,7 +19,7 @@ terminal.max_speed = 0.01
 terminal.braking_power = "1000MW"
 terminal.rotation_speed = 0.01 / 60
 terminal.acceleration_per_sec = 0
-terminal.tank_driving = false
+tterminal.tank_driving = false
 terminal.collision_box = {{-0.8, -1.1}, {0.8, 1.1}}
 terminal.selection_box = {{-1.2, -1.4}, {1.2, 1.4}}
 terminal.map_color = {0.25, 0.25, 0.25}
@@ -60,6 +60,7 @@ reactorShell.name = "mf-energy-core-reactor-shell"
 reactorShell.type = "simple-entity-with-owner"
 reactorShell.flags = nil
 reactorShell.minable = nil
+reactorShell.next_upgrade = nil
 reactorShell.destructible = false
 reactorShell.selectable_in_game = false
 reactorShell.collision_mask = {layers = {}}
