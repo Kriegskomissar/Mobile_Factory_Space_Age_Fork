@@ -1,4 +1,29 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.0
+Date: 2026-10-30
+  Major overhaul:
+    - Removed the old one-factory-per-player restriction. Small, Super and Mega Factories are now independent runtime objects keyed by entity unit number and can coexist.
+    - Reworked Super and Mega Factory vehicle physics around Factorio's native tank model, with tiered mass, power-to-weight, speed and steering instead of custom movement logic.
+    - Restored proper collision masks and scaled collision/selection boxes for all factory tiers.
+    - Replaced the permanent floating factory panel with contextual entity GUI opened by normal left-click interaction.
+    - Integrated the Mobile Factory inventory into the same factory interface instead of opening a detached inventory window.
+    - Enter near the interior terminal now transfers the player to the actual Mobile Factory tank; the terminal remains an interface object.
+    - Rebuilt interiors as finite rooms with out-of-map surroundings and collision walls, with tier-specific Small/Super/Mega dimensions.
+    - Added a dedicated sealed Energy Core room to the Mega Factory and moved its power interface against the interior wall.
+    - Added a migration path that rebuilds old 1.0.x grassy factory surfaces into the new finite interiors.
+    - Reduced equipment grids to 10x10 (Small), 15x15 (Super) and 20x20 (Mega).
+    - Explicitly linked Jump Drive and Jump Charger items to their equipment prototypes so they can be placed in Mobile Factory grids.
+    - Added current factory, equipment and GUI localization entries, removing the Unknown key errors for the new prototypes.
+
+  Bugfixes:
+    - Fixed repeated placement of Super/Mega factories destroying the newly placed entity because of the legacy single-factory restriction.
+    - Fixed Mega Factory's empty collision mask, which allowed terrain objects to pass through the hull.
+    - Fixed stale GUI state that caused the Mobile Factory panel to remain visible outside the intended context.
+    - Fixed interior sizing/placement so Mega Factory no longer reuses the Small Factory room layout.
+    - Fixed the terminal Enter behaviour so the decorative terminal car does not become the player's drivable vehicle.
+    - Preserved native remote-map Jump Marker assignment for the teleport button.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.0.12
 Date: 2026-10-30
   Bugfixes:
