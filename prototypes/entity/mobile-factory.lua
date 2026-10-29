@@ -33,6 +33,12 @@ data.raw.car.SuperFactory.guns = {
 }
 setFactoryResistances(data.raw.car.SuperFactory, 20)
 
+-- Super Factory requires both the Small Factory and chemical science.
+data.raw.technology.SuperFactory.prerequisites = {
+    "SmallFactory",
+    "chemical-science-pack"
+}
+
 -- Mega Factory --
 createNewMF("MegaFactory", {1.0, 0.55, 0.20}, 3.0, "c", "__Mobile_Factory_Space_Age__/graphics/mobile-factory/HMF.png")
 data.raw.car.MegaFactory.consumption = "15000kW"
@@ -51,6 +57,12 @@ data.raw.car.MegaFactory.collision_mask = {
 }
 data.raw.car.MegaFactory.animation.layers[3].shift = util.by_pixel(17.75, 80)
 data.raw.car.MegaFactory.selection_priority = 120
+
+-- Mega Factory requires both the Super Factory and metallurgic science.
+data.raw.technology.MegaFactory.prerequisites = {
+    "SuperFactory",
+    "metallurgic-science-pack"
+}
 
 -- Recipe costs deliberately scale with factory tier.
 data.raw.recipe.SuperFactory.ingredients = {
