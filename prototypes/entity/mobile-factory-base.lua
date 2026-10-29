@@ -151,7 +151,7 @@ data:extend{mf}
 local mfI = {}
 mfI.type = "item-with-entity-data"
 mfI.name = "SmallFactory"
-mfI.icon = "__Mobile_Factory_Space_Age__/graphics/mobile-factory/tank.png"
+mfI.icon = "__Mobile_Factories_Onboard_Production__/graphics/mobile-factory/tank.png"
 mfI.icon_size = 256
 mfI.place_result = "SmallFactory"
 mfI.subgroup = "SmallFactory"
@@ -161,8 +161,6 @@ mfI.weight = 1 * tons
 data:extend{mfI}
 
 -- Create the Mobile Factory Recipe --
--- Production uses ordinary Factorio materials and deliberately represents
--- the factory as a large assembled vehicle rather than a normal machine.
 local mfR = {}
 mfR.type = "recipe"
 mfR.name = "SmallFactory"
@@ -190,7 +188,7 @@ data:extend{mfR}
 local mfT = {}
 mfT.name = "SmallFactory"
 mfT.type = "technology"
-mfT.icon = "__Mobile_Factory_Space_Age__/graphics/mobile-factory/tank.png"
+mfT.icon = "__Mobile_Factories_Onboard_Production__/graphics/mobile-factory/tank.png"
 mfT.icon_size = 256
 mfT.unit = {
     count = 250,
