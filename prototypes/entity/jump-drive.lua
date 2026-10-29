@@ -15,7 +15,7 @@
 --
 -- All marks occupy a 5x5 block in the equipment grid.
 
-local function createJumpDrive(name, icon, power, maxTime, order)
+local function createJumpDrive(name, icon, power, maxTime, order, ingredients)
     data:extend{
         {
             type = "battery-equipment",
@@ -58,11 +58,7 @@ local function createJumpDrive(name, icon, power, maxTime, order)
             name = name,
             enabled = false,
             energy_required = 20,
-            ingredients = {
-                {type = "item", name = "steel-plate", amount = 50},
-                {type = "item", name = "processing-unit", amount = 50},
-                {type = "item", name = "battery", amount = 20}
-            },
+            ingredients = ingredients,
             results = {{type = "item", name = name, amount = 1}}
         }
     }
@@ -74,9 +70,32 @@ end
 
 local icon = "__Mobile_Factory_Space_Age__/graphics/entity/JumpDriveE.png"
 
-createJumpDrive("JumpDrive-Mk1", icon, 120e6, 10, "a")
-createJumpDrive("JumpDrive-Mk2", icon, 240e6, 5, "b")
-createJumpDrive("JumpDrive-Mk3", icon, 1.2e9, 1, "c")
+-- Mk.I: first practical jump system. Red electronics and the components
+-- needed to make the drive independent of belt movement.
+createJumpDrive("JumpDrive-Mk1", icon, 120e6, 10, "a", {
+    {type = "item", name = "battery", amount = 20},
+    {type = "item", name = "electric-engine-unit", amount = 20},
+    {type = "item", name = "belt-immunity-equipment", amount = 10},
+    {type = "item", name = "electronic-circuit", amount = 100}
+})
+
+-- Mk.II: substantially more powerful and moves to blue processing units.
+createJumpDrive("JumpDrive-Mk2", icon, 240e6, 5, "b", {
+    {type = "item", name = "battery", amount = 50},
+    {type = "item", name = "electric-engine-unit", amount = 50},
+    {type = "item", name = "belt-immunity-equipment", amount = 20},
+    {type = "item", name = "processing-unit", amount = 300}
+})
+
+-- Mk.III: end-game drive. Holmium plate makes the final mark dependent on
+-- Fulgora instead of being merely a larger pile of Nauvis components.
+createJumpDrive("JumpDrive-Mk3", icon, 1.2e9, 1, "c", {
+    {type = "item", name = "battery", amount = 100},
+    {type = "item", name = "electric-engine-unit", amount = 100},
+    {type = "item", name = "belt-immunity-equipment", amount = 50},
+    {type = "item", name = "processing-unit", amount = 500},
+    {type = "item", name = "holmium-plate", amount = 100}
+})
 
 ---------------------------------- TECHNOLOGIES ----------------------------------
 
