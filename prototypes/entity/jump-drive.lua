@@ -1,19 +1,6 @@
----------------------------------- JUMP DRIVE EQUIPMENT ----------------------------------
---
+---------------------------------- JUMP DRIVE EQUIPMENT --------------------
 -- Jump Drive is equipment installed in a Mobile Factory equipment grid.
--- It is the actual teleport mechanism and has no usable internal battery.
--- Its energy pulse is supplied exclusively by installed Jump Chargers.
---
--- Energy model:
---   E = 100 MJ * mass(t) * distance(km)
---
--- Drive Marks define the maximum pulse power and therefore the maximum time
--- for a jump. They do not make the jump cheaper:
---   Mk.I   = 120 MW, 10 s
---   Mk.II  = 240 MW, 5 s
---   Mk.III = 1.2 GW, 1 s
---
--- All marks occupy a 5x5 block in the equipment grid.
+-- It has no usable internal battery; its jump pulse is supplied by Jump Chargers.
 
 local function createJumpDrive(name, icon, power, maxTime, order, ingredients)
     data:extend{
@@ -26,14 +13,7 @@ local function createJumpDrive(name, icon, power, maxTime, order, ingredients)
                 height = 128,
                 priority = "medium"
             },
-            shape = {
-                width = 5,
-                height = 5,
-                type = "full"
-            },
-            -- The Drive itself does not store meaningful energy and cannot
-            -- receive or output power through the normal equipment grid.
-            -- Jump Drive runtime logic consumes energy from Jump Charger(s).
+            shape = {width = 5, height = 5, type = "full"},
             energy_source = {
                 type = "electric",
                 buffer_capacity = "1J",
@@ -49,9 +29,11 @@ local function createJumpDrive(name, icon, power, maxTime, order, ingredients)
             name = name,
             icon = icon,
             icon_size = 128,
+            place_as_equipment_result = name,
             subgroup = "MobileFactory",
             order = order,
-            stack_size = 1
+            stack_size = 1,
+            weight = 200 * kg
         },
         {
             type = "recipe",
@@ -63,15 +45,12 @@ local function createJumpDrive(name, icon, power, maxTime, order, ingredients)
         }
     }
 
-    -- Runtime Jump Drive object reads these custom prototype fields.
     data.raw["battery-equipment"][name].mf_jump_power = power
     data.raw["battery-equipment"][name].mf_jump_max_time = maxTime
 end
 
 local icon = "__Mobile_Factories_Onboard_Production__/graphics/entity/JumpDriveE.png"
 
--- Mk.I: first practical jump system. Red electronics and the components
--- needed to make the drive independent of belt movement.
 createJumpDrive("JumpDrive-Mk1", icon, 120e6, 10, "a", {
     {type = "item", name = "battery", amount = 20},
     {type = "item", name = "electric-engine-unit", amount = 20},
@@ -79,7 +58,6 @@ createJumpDrive("JumpDrive-Mk1", icon, 120e6, 10, "a", {
     {type = "item", name = "electronic-circuit", amount = 100}
 })
 
--- Mk.II: substantially more powerful and moves to blue processing units.
 createJumpDrive("JumpDrive-Mk2", icon, 240e6, 5, "b", {
     {type = "item", name = "battery", amount = 50},
     {type = "item", name = "electric-engine-unit", amount = 50},
@@ -87,8 +65,6 @@ createJumpDrive("JumpDrive-Mk2", icon, 240e6, 5, "b", {
     {type = "item", name = "processing-unit", amount = 300}
 })
 
--- Mk.III: end-game drive. Holmium plate makes the final mark dependent on
--- Fulgora instead of being merely a larger pile of Nauvis components.
 createJumpDrive("JumpDrive-Mk3", icon, 1.2e9, 1, "c", {
     {type = "item", name = "battery", amount = 100},
     {type = "item", name = "electric-engine-unit", amount = 100},
@@ -97,8 +73,7 @@ createJumpDrive("JumpDrive-Mk3", icon, 1.2e9, 1, "c", {
     {type = "item", name = "holmium-plate", amount = 100}
 })
 
----------------------------------- TECHNOLOGIES ----------------------------------
-
+---------------------------------- TECHNOLOGIES -------------------------------
 local function createJumpDriveTechnology(name, prerequisite, recipe, count, order)
     data:extend{
         {
@@ -109,15 +84,10 @@ local function createJumpDriveTechnology(name, prerequisite, recipe, count, orde
             unit = {
                 count = count,
                 time = 60,
-                ingredients = {
-                    {"space-science-pack", 1}
-                }
+                ingredients = {{"space-science-pack", 1}}
             },
             prerequisites = {prerequisite},
-            effects = {{
-                type = "unlock-recipe",
-                recipe = recipe
-            }},
+            effects = {{type = "unlock-recipe", recipe = recipe}},
             order = order
         }
     }
