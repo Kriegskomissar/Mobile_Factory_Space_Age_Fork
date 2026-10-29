@@ -1,57 +1,12 @@
 -- CURRENT MOBILE FACTORY GUI -------------------------------------------------
--- The old Mobile Factory GUI depended on removed Control Center, Quatron,
--- Internal Energy and Data Network systems. The current design only needs a
--- small exterior entry button and the dedicated interior terminal GUI.
+-- The factory GUI is opened by Factorio's normal entity interaction. There is
+-- no permanent floating panel and no GUI state is stored in `storage`.
 
 GUI = GUI or {}
-GUI.instances = GUI.instances or {}
 
-local function destroyMainGUI(player)
-    if not player or not player.valid then return end
-    local gui = player.gui.screen["MFMainGUI"]
-    if gui and gui.valid then gui.destroy() end
-    GUI.instances[player.index] = nil
-end
-
-function GUI.createMFMainGUI(player)
-    if player == nil or not player.valid then return nil end
-
-    destroyMainGUI(player)
-
-    local frame = player.gui.screen.add{
-        type = "frame",
-        name = "MFMainGUI",
-        direction = "horizontal",
-        caption = "Mobile Factory"
-    }
-    frame.auto_center = false
-    frame.location = {x = 20, y = 120}
-
-    frame.add{
-        type = "button",
-        name = "MFEnterInsideButton",
-        caption = "Зайти внутрь"
-    }
-
-    GUI.instances[player.index] = frame
-    return frame
-end
-
-function GUI.updateAllGUIs(force)
-    for _, player in pairs(game.connected_players) do
-        local frame = GUI.instances[player.index]
-        if frame == nil or not frame.valid then
-            GUI.createMFMainGUI(player)
-        end
-    end
-end
-
-function GUI.openTTGui(MFPlayer, player, entity)
-    if entity == nil or not entity.valid or player == nil then return end
-    if entity.name == "mf-interior-terminal-car" then
-        local MF = MFInterior.getBySurface(entity.surface)
-        if MF ~= nil then MFInterior.openTerminal(player, MF) end
-    end
+function GUI.openFactoryGUI(player, MF)
+    if player == nil or not player.valid or MF == nil or MF.ent == nil or not MF.ent.valid then return end
+    MFInterior.openTerminal(player, MF)
 end
 
 function GUI.guiOpened(event)
@@ -59,10 +14,16 @@ function GUI.guiOpened(event)
     local entity = event.entity
     if player == nil or entity == nil or not entity.valid then return false end
 
-    if entity.name == "mf-interior-terminal-car" then
-        local MF = MFInterior.getBySurface(entity.surface)
+    if entity.name == "SmallFactory" or entity.name == "SuperFactory" or entity.name == "MegaFactory" then
+        local MF = MFInterior.getByEntity(entity)
         if MF ~= nil then
-            MFInterior.openTerminal(player, MF)
+            GUI.openFactoryGUI(player, MF)
+            return true
+        end
+    elseif entity.name == "mf-interior-terminal-car" then
+        local MF = MFInterior.getByEntity(entity) or MFInterior.getBySurface(entity.surface)
+        if MF ~= nil then
+            GUI.openFactoryGUI(player, MF)
             return true
         end
     end
@@ -79,15 +40,6 @@ function GUI.buttonClicked(event)
     if player == nil or not player.valid or event.element == nil or not event.element.valid then return false end
 
     local name = event.element.name
-
-    if name == "MFEnterInsideButton" then
-        local MF = getCurrentMF(player.index)
-        if MF ~= nil then
-            MFInterior.enter(MF, player)
-        end
-        return true
-    end
-
     if string.sub(name, 1, 11) == "MFInterior." then
         return MFInterior.handleGuiClick(event)
     end
