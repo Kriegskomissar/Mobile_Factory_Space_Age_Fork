@@ -3,6 +3,12 @@ require("utils/functions.lua")
 require("scripts/update-system.lua")
 require("utils/place-and-remove.lua")
 
+-- Compatibility helper for the current runtime code. Factorio exposes this
+-- through game.get_player(); the old fork used a global getPlayer helper.
+function getPlayer(player)
+    return game.get_player(player)
+end
+
 -- Update all runtime objects.
 function updateEntities(event)
     UpSys.update(event)
