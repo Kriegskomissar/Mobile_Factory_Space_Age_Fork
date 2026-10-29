@@ -55,9 +55,10 @@ data:extend{
         enabled = false,
         energy_required = 15,
         ingredients = {
-            {type = "item", name = "steel-plate", amount = 100},
-            {type = "item", name = "processing-unit", amount = 50},
-            {type = "item", name = "battery", amount = 50}
+            {type = "item", name = "battery-equipment", amount = 10},
+            {type = "item", name = "accumulator", amount = 5},
+            {type = "item", name = "electronic-circuit", amount = 50},
+            {type = "item", name = "steel-plate", amount = 50}
         },
         results = {{type = "item", name = "JumpCharger", amount = 1}}
     },
