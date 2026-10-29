@@ -1,16 +1,12 @@
 -------------- SURFACES UTILITIES -------------------
 
--- Create the Mobile Factory internal surface. The actual implementation now
--- lives in the per-factory interior object so multiple factories can coexist.
+require("scripts/objects/mobile-factory-interior.lua")
+require("scripts/objects/mobile-factory-interior-multi.lua")
+
 function createMFSurface(MF)
-    if MFInterior ~= nil and MFInterior.create ~= nil then
-        return MFInterior.create(MF)
-    end
+    if MFInterior ~= nil and MFInterior.create ~= nil then return MFInterior.create(MF) end
 end
 
--- Kept as a compatibility no-op for old saves/scripts. The former Control
--- Center surface and its Internal Energy/Quatron cubes are gone from the new
--- Mobile Factory architecture.
 function createControlRoom(MF)
     MF.ccS = nil
     return nil
