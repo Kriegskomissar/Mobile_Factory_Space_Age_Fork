@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.7
+Date: 2026-10-29
+  Bugfixes:
+    - Fixed the Mega Factory Energy Core reactor shell inheriting a next_upgrade chain from the nuclear reactor prototype.
+    - The reactor shell is now explicitly detached from external upgrade chains, including modded reactor upgrades.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.0.6
 Date: 2026-10-29
   Changes:
