@@ -4,19 +4,17 @@
 -- small exterior entry button and the dedicated interior terminal GUI.
 
 GUI = GUI or {}
+GUI.instances = GUI.instances or {}
 
 local function destroyMainGUI(player)
     if not player or not player.valid then return end
     local gui = player.gui.screen["MFMainGUI"]
     if gui and gui.valid then gui.destroy() end
+    GUI.instances[player.index] = nil
 end
 
 function GUI.createMFMainGUI(player)
     if player == nil or not player.valid then return nil end
-
-    local MFPlayer = getMFPlayer(player.index)
-    if MFPlayer == nil then return nil end
-    MFPlayer.GUI = MFPlayer.GUI or {}
 
     destroyMainGUI(player)
 
@@ -35,22 +33,16 @@ function GUI.createMFMainGUI(player)
         caption = "Зайти внутрь"
     }
 
-    MFPlayer.GUI.MFMainGUI = {
-        gui = frame,
-        MFPlayer = MFPlayer
-    }
-    return MFPlayer.GUI.MFMainGUI
+    GUI.instances[player.index] = frame
+    return frame
 end
 
 function GUI.updateAllGUIs(force)
     for _, player in pairs(game.connected_players) do
-        local MFPlayer = getMFPlayer(player.index)
-        if MFPlayer == nil then goto continue end
-        local entry = MFPlayer.GUI and MFPlayer.GUI.MFMainGUI
-        if entry == nil or entry.gui == nil or not entry.gui.valid then
+        local frame = GUI.instances[player.index]
+        if frame == nil or not frame.valid then
             GUI.createMFMainGUI(player)
         end
-        ::continue::
     end
 end
 
