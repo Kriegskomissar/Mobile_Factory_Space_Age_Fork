@@ -3,7 +3,7 @@
 local CC = {}
 CC.name = "ControlCenter"
 CC.type = "technology"
-CC.icon = "__Mobile_Factory_Space_Age__/graphics/icons/ControlCenterT.png"
+CC.icon = "__Mobile_Factories_Onboard_Production__/graphics/icons/ControlCenterT.png"
 CC.icon_size = 256
 CC.unit = {
     count = 300,
