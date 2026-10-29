@@ -68,7 +68,7 @@ local function createJumpDrive(name, icon, power, maxTime, order, ingredients)
     data.raw["battery-equipment"][name].mf_jump_max_time = maxTime
 end
 
-local icon = "__Mobile_Factory_Space_Age__/graphics/entity/JumpDriveE.png"
+local icon = "__Mobile_Factories_Onboard_Production__/graphics/entity/JumpDriveE.png"
 
 -- Mk.I: first practical jump system. Red electronics and the components
 -- needed to make the drive independent of belt movement.
