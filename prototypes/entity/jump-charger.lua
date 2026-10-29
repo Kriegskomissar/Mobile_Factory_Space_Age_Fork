@@ -10,7 +10,7 @@
 --
 -- Each charger occupies a 2x5 block in the equipment grid.
 
-local chargerIcon = "__Mobile_Factory_Space_Age__/graphics/entity/JumpChargerE.png"
+local chargerIcon = "__Mobile_Factories_Onboard_Production__/graphics/entity/JumpChargerE.png"
 
 local charger = {
     type = "battery-equipment",
