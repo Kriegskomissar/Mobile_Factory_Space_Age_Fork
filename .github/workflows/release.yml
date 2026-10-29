@@ -1,0 +1,55 @@
+name: Release mod
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: ${{ github.repository == 'Kriegskomissar/Mobile_Factory_Space_Age_Fork' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Read version
+        id: version
+        shell: bash
+        run: |
+          version=$(python3 - <<'PY'
+          import json
+          with open('info.json', encoding='utf-8') as f:
+              print(json.load(f)['version'])
+          PY
+          )
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Build Factorio mod ZIP
+        shell: bash
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          mod_name="Mobile_Factories_Onboard_Production_${version}"
+          mkdir -p "package/${mod_name}"
+          git archive HEAD | tar -x -C "package/${mod_name}"
+          rm -rf "package/${mod_name}/.github" "package/${mod_name}/.git"
+          cd package
+          zip -r "../${mod_name}.zip" "${mod_name}"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          version="${{ steps.version.outputs.version }}"
+          tag="v${version}"
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release $tag already exists; nothing to do."
+            exit 0
+          fi
+          gh release create "$tag" "Mobile_Factories_Onboard_Production_${version}.zip" \
+            --title "Mobile factories: On-board production ${version}" \
+            --generate-notes
