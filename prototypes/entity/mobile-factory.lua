@@ -51,3 +51,30 @@ data.raw.car.MegaFactory.collision_mask = {
 }
 data.raw.car.MegaFactory.animation.layers[3].shift = util.by_pixel(17.75, 80)
 data.raw.car.MegaFactory.selection_priority = 120
+
+-- Recipe costs deliberately scale with factory tier.
+data.raw.recipe.SuperFactory.ingredients = {
+    {type = "item", name = "tank", amount = 10},
+    {type = "item", name = "car", amount = 1},
+    {type = "item", name = "electronic-circuit", amount = 500},
+    {type = "item", name = "engine-unit", amount = 500},
+    {type = "item", name = "steel-plate", amount = 1000},
+    {type = "item", name = "big-electric-pole", amount = 50},
+    {type = "item", name = "concrete", amount = 1000},
+    {type = "item", name = "steel-chest", amount = 100}
+}
+data.raw.recipe.SuperFactory.energy_required = 60
+
+data.raw.recipe.MegaFactory.ingredients = {
+    {type = "item", name = "tank", amount = 20},
+    {type = "item", name = "car", amount = 2},
+    {type = "item", name = "accumulator", amount = 20},
+    {type = "item", name = "nuclear-reactor", amount = 1},
+    {type = "item", name = "processing-unit", amount = 200},
+    {type = "item", name = "engine-unit", amount = 500},
+    {type = "item", name = "tungsten-plate", amount = 2000},
+    {type = "item", name = "substation", amount = 100},
+    {type = "item", name = "refined-concrete", amount = 2000},
+    {type = "item", name = "steel-chest", amount = 300}
+}
+data.raw.recipe.MegaFactory.energy_required = 120
