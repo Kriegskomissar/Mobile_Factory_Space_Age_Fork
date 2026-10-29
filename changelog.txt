@@ -1,4 +1,21 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.0
+Date: 2026-10-29
+  Major Features:
+    - Reworked the mod into a standalone Factorio 2.1 + Space Age mobile-factory project.
+    - Added tiered Small, Super and Mega Mobile Factories with separate interior factory spaces.
+    - Added the on-board production concept with interior inventory access and factory terminals.
+    - Added the Jump Drive Mk.I, Mk.II and Mk.III progression and the independent Jump Charger technology.
+    - Reworked the factory technology progression around Tank, Small Factory, Chemical Science and Metallurgic Science.
+  Compatibility:
+    - Targets Factorio 2.1 with Space Age as a required dependency.
+  Changes:
+    - Renamed the mod ID to Mobile_Factories_Onboard_Production so this project is a separate mod rather than an update of Mobile_Factory_Space_Age.
+    - Set the display title to Mobile factories: On-board production.
+    - Removed the obsolete multi-factory interior runtime override and its former exterior-energy transfer logic.
+    - This release is intended for a fresh game and is not a save-compatible update of the previous Mobile Factory Space Age package.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.0.7
 Date: 2026-10-25
   Bugfixes:
