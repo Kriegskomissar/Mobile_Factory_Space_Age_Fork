@@ -1,8 +1,6 @@
 -- MOBILE FACTORY INTERIOR ----------------------------------------------------
 -- Each placed Mobile Factory gets its own persistent interior surface.
--- The three floor sizes intentionally mirror Factorissimo's classic tiers:
--- Small = 30, Super = 46, Mega = 60 tiles.
-
+-- The floor sizes mirror Factorissimo's classic tiers: 30 / 46 / 60.
 MFInterior = MFInterior or {}
 
 local TIERS = {
@@ -10,76 +8,52 @@ local TIERS = {
     SuperFactory = {size = 46, half = 23, power = 250e6, tier = 2},
     MegaFactory = {size = 60, half = 30, power = 1000e6, tier = 3}
 }
+local POWER_BUFFER = 10e9
 
 local function tierFor(MF)
     if MF == nil or MF.ent == nil or not MF.ent.valid then return TIERS.SmallFactory end
     return TIERS[MF.ent.name] or TIERS.SmallFactory
 end
-
-local function surfaceName(MF)
-    return "mf-factory-floor-" .. tostring(MF.ent.unit_number)
-end
+local function surfaceName(MF) return "mf-factory-floor-" .. tostring(MF.ent.unit_number) end
 
 local function setFloor(surface, half)
-    local floor = {}
-    local border = {}
-
+    local floor, border = {}, {}
     for x = -half, half do
         for y = -half, half do
             if math.abs(x) == half or math.abs(y) == half then
                 table.insert(border, {name = "refined-hazard-concrete-right", position = {x, y}})
             else
-                table.insert(floor, {name = "tutorial-grid", position = {x, y}})
+                table.insert(floor, {name = "refined-concrete", position = {x, y}})
             end
         end
     end
-
-    if #floor > 0 then surface.set_tiles(floor, true) end
-    if #border > 0 then surface.set_tiles(border, true) end
-
-    -- A continuous steel-looking border. The hazard-concrete frame is used as
-    -- the first implementation of the inventory-wall visual; it deliberately
-    -- reads as one uninterrupted industrial perimeter rather than a row of
-    -- interactable chests.
+    surface.set_tiles(floor, true)
+    surface.set_tiles(border, true)
 end
 
 local function createEntity(surface, name, position, force)
-    return surface.create_entity{
-        name = name,
-        position = position,
-        force = force,
-        raise_built = false,
-        create_build_effect_smoke = false
-    }
+    return surface.create_entity{name=name, position=position, force=force, raise_built=false, create_build_effect_smoke=false}
 end
 
 local function createPowerInterface(MF, tier)
-    local surface = MF.fS
-    local force = MF.ent.force
+    local surface, force = MF.fS, MF.ent.force
+    local outsidePosition = {MF.ent.position.x, MF.ent.position.y + 6}
+    local insidePosition = {0, tier.half - 3}
 
     if MF.interiorPower == nil or not MF.interiorPower.valid then
-        MF.interiorPower = createEntity(surface, "mf-interior-power-interface", {0, tier.half - 3}, force)
+        MF.interiorPower = createEntity(surface, "mf-interior-power-interface", insidePosition, force)
     end
-
     if MF.exteriorPower == nil or not MF.exteriorPower.valid then
-        MF.exteriorPower = createEntity(MF.ent.surface, "mf-interior-power-interface", {
-            MF.ent.position.x,
-            MF.ent.position.y + tier.half * 0.15
-        }, force)
+        MF.exteriorPower = createEntity(MF.ent.surface, "mf-interior-power-interface", outsidePosition, force)
     end
-
     if MF.interiorEnergy == nil or not MF.interiorEnergy.valid then
-        MF.interiorEnergy = createEntity(surface, "mf-interior-energy-interface", {0, tier.half - 3}, force)
+        MF.interiorEnergy = createEntity(surface, "mf-interior-energy-interface", insidePosition, force)
     end
-
     if MF.exteriorEnergy == nil or not MF.exteriorEnergy.valid then
-        MF.exteriorEnergy = createEntity(MF.ent.surface, "mf-interior-energy-interface", {
-            MF.ent.position.x,
-            MF.ent.position.y + tier.half * 0.15
-        }, force)
+        MF.exteriorEnergy = createEntity(MF.ent.surface, "mf-interior-energy-interface", outsidePosition, force)
     end
 
-    if MF.interiorPower.valid and MF.exteriorPower.valid then
+    if MF.interiorPower and MF.interiorPower.valid and MF.exteriorPower and MF.exteriorPower.valid then
         local ir = MF.interiorPower.get_wire_connector(defines.wire_connector_id.circuit_red, true)
         local er = MF.exteriorPower.get_wire_connector(defines.wire_connector_id.circuit_red, true)
         local ig = MF.interiorPower.get_wire_connector(defines.wire_connector_id.circuit_green, true)
@@ -101,7 +75,6 @@ end
 
 function MFInterior.create(MF)
     if MF == nil or MF.ent == nil or not MF.ent.valid then return nil end
-
     local tier = tierFor(MF)
     local name = surfaceName(MF)
     local surface = game.get_surface(name)
@@ -111,7 +84,6 @@ function MFInterior.create(MF)
             default_enable_all_autoplace_controls = false,
             property_expression_names = {cliffiness = 0},
             peaceful_mode = true,
-            autoplace_settings = {tile = {settings = {["VoidTile"] = {frequency = "normal", size = "normal", richness = "normal"}}}},
             starting_area = "none"
         })
         surface.always_day = false
@@ -146,36 +118,25 @@ end
 
 function MFInterior.getBySurface(surface)
     if surface == nil then return nil end
-    for _, MF in pairs(storage.MFTable or {}) do
-        if MF.fS == surface then return MF end
-    end
+    for _, MF in pairs(storage.MFTable or {}) do if MF.fS == surface then return MF end end
     return nil
 end
 
 function MFInterior.enter(MF, player)
-    if MF == nil or player == nil or not player.valid then return false end
-    if MF.ent == nil or not MF.ent.valid then return false end
+    if MF == nil or player == nil or not player.valid or MF.ent == nil or not MF.ent.valid then return false end
     if MF.fS == nil or not MF.fS.valid then MFInterior.create(MF) end
-
     local tier = tierFor(MF)
     local target = MF.fS.find_non_colliding_position("character", {0, tier.half - 9}, 6, 0.5)
     if target == nil then return false end
-
     player.teleport(target, MF.fS)
     player.opened = nil
     return true
 end
 
 function MFInterior.exit(MF, player)
-    if MF == nil or player == nil or not player.valid then return false end
-    if MF.ent == nil or not MF.ent.valid then return false end
-
-    local target = MF.ent.surface.find_non_colliding_position("character", {
-        MF.ent.position.x + 0,
-        MF.ent.position.y + 6
-    }, 8, 0.5)
+    if MF == nil or player == nil or not player.valid or MF.ent == nil or not MF.ent.valid then return false end
+    local target = MF.ent.surface.find_non_colliding_position("character", {MF.ent.position.x, MF.ent.position.y + 6}, 8, 0.5)
     if target == nil then return false end
-
     player.teleport(target, MF.ent.surface)
     player.opened = nil
     return true
@@ -185,11 +146,7 @@ function MFInterior.enterVehicleFromTerminal(player, terminal)
     if terminal == nil or not terminal.valid or terminal.name ~= "mf-interior-terminal-car" then return false end
     local unit = terminal.tags and terminal.tags.mobile_factory_unit_number
     local MF = unit and storage.entsTable[unit] or nil
-    if MF == nil then return false end
-    if MF.ent == nil or not MF.ent.valid then return false end
-
-    -- The player used Enter on the little car. Transfer that driving state to
-    -- the Mobile Factory itself, preserving the normal Factorio vehicle flow.
+    if MF == nil or MF.ent == nil or not MF.ent.valid then return false end
     terminal.set_driver(nil)
     MF.ent.set_driver(player)
     return true
@@ -199,42 +156,35 @@ function MFInterior.openInventory(player, MF)
     if MF == nil or MF.ent == nil or not MF.ent.valid then return end
     local inv = MF.ent.get_inventory(defines.inventory.car_trunk)
     if inv == nil then return end
-
     local root = player.gui.screen["MFInteriorInventory"]
     if root and root.valid then root.destroy() end
-
-    root = player.gui.screen.add{type = "frame", name = "MFInteriorInventory", direction = "vertical", caption = {"gui-description.MFInteriorInventory"}}
+    root = player.gui.screen.add{type="frame", name="MFInteriorInventory", direction="vertical", caption={"gui-description.MFInteriorInventory"}}
     root.auto_center = true
-    local invGui = root.add{type = "inventory", name = "Inventory", slots_per_row = 10}
+    local invGui = root.add{type="inventory", name="Inventory", slots_per_row=10}
     invGui.inventory = inv
     invGui.handle_cursor_transfer = true
     invGui.handle_cursor_split = true
-    root.add{type = "button", name = "MFInterior.InventoryClose", caption = {"gui-description.Close"}}
+    root.add{type="button", name="MFInterior.InventoryClose", caption={"gui-description.Close"}}
     player.opened = root
 end
 
 function MFInterior.openTerminal(player, MF)
     local gui = player.gui.screen["MFInteriorTerminalGUI"]
     if gui and gui.valid then gui.destroy() end
-
-    gui = player.gui.screen.add{type = "frame", name = "MFInteriorTerminalGUI", direction = "vertical", caption = {"gui-description.MFInteriorTerminal"}}
+    gui = player.gui.screen.add{type="frame", name="MFInteriorTerminalGUI", direction="vertical", caption={"gui-description.MFInteriorTerminal"}}
     gui.auto_center = true
-    gui.add{type = "label", caption = {"gui-description.MFInteriorTerminalHint"}}
-    gui.add{type = "button", name = "MFInterior.OpenInventory", caption = {"gui-description.MFInteriorOpenInventory"}}
-    gui.add{type = "button", name = "MFInterior.AssignTeleport", caption = {"gui-description.MFInteriorAssignTeleport"}}
-    gui.add{type = "button", name = "MFInterior.Exit", caption = {"gui-description.MFInteriorExit"}}
+    gui.add{type="label", caption={"gui-description.MFInteriorTerminalHint"}}
+    gui.add{type="button", name="MFInterior.OpenInventory", caption={"gui-description.MFInteriorOpenInventory"}}
+    gui.add{type="button", name="MFInterior.AssignTeleport", caption={"gui-description.MFInteriorAssignTeleport"}}
+    gui.add{type="button", name="MFInterior.Exit", caption={"gui-description.MFInteriorExit"}}
     player.opened = gui
 end
 
 function MFInterior.assignTeleport(player, MF)
     if MF == nil or MF.jumpDriveObj == nil or MF.ent == nil or not MF.ent.valid then return end
     local base = "Mobile Factory " .. tostring(MF.ent.unit_number)
-    local name = base
-    local i = 2
-    while MF.jumpDriveObj.locationTable and MF.jumpDriveObj.locationTable[name] ~= nil do
-        name = base .. " (" .. tostring(i) .. ")"
-        i = i + 1
-    end
+    local name, i = base, 2
+    while MF.jumpDriveObj.locationTable and MF.jumpDriveObj.locationTable[name] ~= nil do name = base .. " (" .. tostring(i) .. ")"; i = i + 1 end
     MF.jumpDriveObj:addLocation(name)
     player.print({"gui-description.MFInteriorTeleportAssigned", name})
 end
@@ -249,29 +199,22 @@ function MFInterior.handleGuiClick(event)
         player.opened = nil
         return true
     end
-    if name == "MFInterior.OpenInventory" or name == "MFInterior.AssignTeleport" or name == "MFInterior.Exit" then
-        local MF = MFInterior.getBySurface(player.surface)
-        if MF == nil then return true end
-        if name == "MFInterior.OpenInventory" then
-            MFInterior.openInventory(player, MF)
-        elseif name == "MFInterior.AssignTeleport" then
-            MFInterior.assignTeleport(player, MF)
-        elseif name == "MFInterior.Exit" then
-            local gui = player.gui.screen["MFInteriorTerminalGUI"]
-            if gui and gui.valid then gui.destroy() end
-            MFInterior.exit(MF, player)
-        end
-        return true
+    if name ~= "MFInterior.OpenInventory" and name ~= "MFInterior.AssignTeleport" and name ~= "MFInterior.Exit" then return false end
+    local MF = MFInterior.getBySurface(player.surface)
+    if MF == nil then return true end
+    if name == "MFInterior.OpenInventory" then MFInterior.openInventory(player, MF)
+    elseif name == "MFInterior.AssignTeleport" then MFInterior.assignTeleport(player, MF)
+    elseif name == "MFInterior.Exit" then
+        local gui = player.gui.screen["MFInteriorTerminalGUI"]
+        if gui and gui.valid then gui.destroy() end
+        MFInterior.exit(MF, player)
     end
-    return false
+    return true
 end
 
 function MFInterior.onGuiOpened(event)
-    local player = game.players[event.player_index]
-    local entity = event.entity
-    if player == nil or entity == nil or not entity.valid then return false end
-    if entity.name ~= "mf-interior-terminal-car" then return false end
-
+    local player, entity = game.players[event.player_index], event.entity
+    if player == nil or entity == nil or not entity.valid or entity.name ~= "mf-interior-terminal-car" then return false end
     local MF = MFInterior.getBySurface(entity.surface)
     if MF == nil then return false end
     MFInterior.openTerminal(player, MF)
@@ -279,10 +222,8 @@ function MFInterior.onGuiOpened(event)
 end
 
 function MFInterior.onDrivingChanged(event)
-    local player = game.players[event.player_index]
-    local vehicle = event.entity
-    if player == nil or vehicle == nil or not vehicle.valid then return false end
-    if vehicle.name ~= "mf-interior-terminal-car" then return false end
+    local player, vehicle = game.players[event.player_index], event.entity
+    if player == nil or vehicle == nil or not vehicle.valid or vehicle.name ~= "mf-interior-terminal-car" then return false end
     if vehicle.get_driver() ~= player then return false end
     return MFInterior.enterVehicleFromTerminal(player, vehicle)
 end
@@ -290,35 +231,22 @@ end
 function MFInterior.update()
     for _, MF in pairs(storage.MFTable or {}) do
         if MF.ent and MF.ent.valid then
-            if MF.fS == nil or not MF.fS.valid then
-                MFInterior.create(MF)
-            end
-
-            -- Keep the interface attached to the moving Mobile Factory.
+            if MF.fS == nil or not MF.fS.valid then MFInterior.create(MF) end
             local tier = tierFor(MF)
-            if MF.exteriorPower and MF.exteriorPower.valid then
-                MF.exteriorPower.teleport({MF.ent.position.x, MF.ent.position.y + tier.half * 0.15}, MF.ent.surface)
-            end
-            if MF.exteriorEnergy and MF.exteriorEnergy.valid then
-                MF.exteriorEnergy.teleport({MF.ent.position.x, MF.ent.position.y + tier.half * 0.15}, MF.ent.surface)
-            end
+            local outsidePosition = {MF.ent.position.x, MF.ent.position.y + 6}
+            if MF.exteriorPower and MF.exteriorPower.valid then MF.exteriorPower.teleport(outsidePosition, MF.ent.surface) end
+            if MF.exteriorEnergy and MF.exteriorEnergy.valid then MF.exteriorEnergy.teleport(outsidePosition, MF.ent.surface) end
 
-            -- External network -> internal network. The outside interface is
-            -- an electric-energy-interface fed by the visible power port;
-            -- the inside interface feeds the whole interior through the
-            -- oversized substation-style pole.
             if MF.exteriorEnergy and MF.exteriorEnergy.valid and MF.interiorEnergy and MF.interiorEnergy.valid then
                 local available = math.max(MF.exteriorEnergy.energy or 0, 0)
-                local room = math.max((MF.interiorEnergy.electric_buffer_size or 0) - (MF.interiorEnergy.energy or 0), 0)
+                local room = math.max(POWER_BUFFER - math.max(MF.interiorEnergy.energy or 0, 0), 0)
                 local transfer = math.min(available, room, tier.power / 60)
                 if transfer > 0 then
                     MF.exteriorEnergy.energy = available - transfer
-                    MF.interiorEnergy.energy = (MF.interiorEnergy.energy or 0) + transfer
+                    MF.interiorEnergy.energy = math.min(POWER_BUFFER, (MF.interiorEnergy.energy or 0) + transfer)
                 end
             end
 
-            -- The little car is an Enter-to-sit interface, not a driveable
-            -- vehicle. If anything moves it, snap it back to its dock.
             if MF.interiorTerminal and MF.interiorTerminal.valid and MF.interiorTerminal.get_driver() == nil then
                 MF.interiorTerminal.teleport({0, tier.half - 5})
                 MF.interiorTerminal.speed = 0
