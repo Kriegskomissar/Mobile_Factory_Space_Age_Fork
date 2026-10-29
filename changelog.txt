@@ -4,13 +4,15 @@ Date: 2026-10-29
   Cleanup:
     - Removed obsolete Control Center and legacy remote API runtime modules.
     - Removed the legacy GUI stack and replaced it with the current Mobile Factory entry interface.
-    - Removed stale runtime requires and the obsolete Jump Charger runtime object.
+    - Removed stale runtime requires and obsolete Jump Charger and player-teleport helper modules.
     - Removed dead technology callbacks and legacy placement restrictions.
+    - Removed GUI objects from persistent storage; GUI state is now rebuilt at runtime.
   Bugfixes:
     - Fixed the starter factory item to use SmallFactory.
     - Fixed runtime factory detection for SmallFactory, SuperFactory and MegaFactory.
     - Fixed deployment collision-mask inheritance to use SmallFactory.
     - Restored the active runtime call wrapper used by event handlers.
+    - Updated runtime GUI cleanup to use the new mod ID.
 
 ---------------------------------------------------------------------------------------------------
 Version: 1.0.9
