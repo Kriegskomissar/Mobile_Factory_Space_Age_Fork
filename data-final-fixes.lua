@@ -1,7 +1,7 @@
--- Copy Mobile Factory collision mask to Deployment Entity --
-local MobileFactory = data.raw.car.MobileFactory
+-- Copy Small Factory collision mask to the deployment helper entity.
+local smallFactory = data.raw.car.SmallFactory
 local MFDeploy = data.raw["simple-entity-with-owner"].MFDeploy
 
-if MobileFactory and MFDeploy then
-    MFDeploy.collision_mask = table.deepcopy(MobileFactory.collision_mask)
+if smallFactory and MFDeploy then
+    MFDeploy.collision_mask = table.deepcopy(smallFactory.collision_mask)
 end
