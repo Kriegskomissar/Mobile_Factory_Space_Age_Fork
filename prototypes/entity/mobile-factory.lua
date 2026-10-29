@@ -19,7 +19,7 @@ end
 setFactoryResistances(data.raw.car.SmallFactory, 10)
 
 -- Super Factory --
-createNewMF("SuperFactory", {0.55, 0.80, 1.0}, 2.0, "b", "__Mobile_Factory_Space_Age__/graphics/mobile-factory/QuickMF.png")
+createNewMF("SuperFactory", {0.55, 0.80, 1.0}, 2.0, "b", "__Mobile_Factories_Onboard_Production__/graphics/mobile-factory/QuickMF.png")
 data.raw.car.SuperFactory.consumption = "1000kW"
 data.raw.car.SuperFactory.effectivity = 2.3
 data.raw.car.SuperFactory.rotation_speed = 0.30 / 60
@@ -40,7 +40,7 @@ data.raw.technology.SuperFactory.prerequisites = {
 }
 
 -- Mega Factory --
-createNewMF("MegaFactory", {1.0, 0.55, 0.20}, 3.0, "c", "__Mobile_Factory_Space_Age__/graphics/mobile-factory/HMF.png")
+createNewMF("MegaFactory", {1.0, 0.55, 0.20}, 3.0, "c", "__Mobile_Factories_Onboard_Production__/graphics/mobile-factory/HMF.png")
 data.raw.car.MegaFactory.consumption = "15000kW"
 data.raw.car.MegaFactory.effectivity = 0.8
 data.raw.car.MegaFactory.rotation_speed = 0.60 / 60
