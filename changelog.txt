@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.9
+Date: 2026-10-29
+  Bugfixes:
+    - Removed the stale require for the deleted jump-marker-gui.lua module.
+    - Audited the active require chain and removed the obsolete Jump Marker GUI dependency without removing the native chart-tag marker system.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.0.8
 Date: 2026-10-29
   Bugfixes:
@@ -28,46 +35,3 @@ Version: 1.0.4
 Date: 2026-10-29
   Cleanup:
     - Removed the obsolete Control Center technology branch.
-    - Removed ConstructibleArea1 and ConstructibleArea2, which were only chained from the obsolete ControlCenter technology.
-    - Removed the obsolete control-center technology prototype from the data stage.
-
----------------------------------------------------------------------------------------------------
-Version: 1.0.3
-Date: 2026-10-29
-  Bugfixes:
-    - Fixed the MFDeploy technology prerequisite after the standalone mod technology-tree rename.
-    - MFDeploy now correctly requires the Small Factory technology instead of the removed MobileFactory technology.
-
----------------------------------------------------------------------------------------------------
-Version: 1.0.2
-Date: 2026-10-29
-  Bugfixes:
-    - Fixed the Small Factory item subgroup reference.
-    - Aligned the Small Factory item with the MobileFactory item subgroup defined by the standalone mod.
-    - Super and Mega Factory items inherit the corrected subgroup through the Small Factory item prototype.
-
----------------------------------------------------------------------------------------------------
-Version: 1.0.1
-Date: 2026-10-29
-  Bugfixes:
-    - Fixed the Small Factory tank turret shadow spritesheet definition for Factorio 2.1.
-    - Added the missing line_length = 8 so the 64-direction shadow spritesheet stays within Factorio's 8192 px maximum spritesheet height.
-
----------------------------------------------------------------------------------------------------
-Version: 1.0.0
-Date: 2026-10-29
-  Major Features:
-    - Reworked the mod into a standalone Factorio 2.1 + Space Age mobile-factory project.
-    - Added tiered Small, Super and Mega Mobile Factories with separate interior factory spaces.
-    - Added the on-board production concept with interior inventory access and factory terminals.
-    - Added the Jump Drive Mk.I, Mk.II and Mk.III progression and the independent Jump Charger technology.
-    - Reworked the factory technology progression around Tank, Small Factory, Chemical Science and Metallurgic Science.
-  Compatibility:
-    - Targets Factorio 2.1 with Space Age as a required dependency.
-  Changes:
-    - Renamed the mod ID to Mobile_Factories_Onboard_Production so this project is a separate mod rather than an update of Mobile_Factory_Space_Age.
-    - Set the display title to Mobile factories: On-board production.
-    - Removed the obsolete multi-factory interior runtime override and its former exterior-energy transfer logic.
-    - This release is intended for a fresh game and is not a save-compatible update of the previous Mobile Factory Space Age package.
-
----------------------------------------------------------------------------------------------------
