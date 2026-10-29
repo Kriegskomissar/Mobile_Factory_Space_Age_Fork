@@ -45,7 +45,7 @@ mfDT.unit = {
         {"logistic-science-pack", 1}
     }
 }
-mfDT.prerequisites = {"MobileFactory"}
+mfDT.prerequisites = {"SmallFactory"}
 mfDT.effects = {{type="nothing", effect_description={"description.Deploy"}}}
 data:extend{mfDT}
 
