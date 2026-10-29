@@ -4,8 +4,6 @@ Event = Event or {}
 
 require("utils/settings.lua")
 require("utils/surface.lua")
-require("utils/cc-extension.lua")
-require("utils/remote.lua")
 require("scripts/GUI/gui.lua")
 require("scripts/game-update.lua")
 require("scripts/events.lua")
@@ -46,9 +44,8 @@ function onInit()
         end
     end
 
-    checkNeededTiles()
-    createProductsList()
-    rendering.clear("Mobile_Factory_Space_Age")
+    -- The old tile/product bootstrap was removed with the legacy factory systems.
+    rendering.clear("Mobile_Factories_Onboard_Production")
 
     storage.playersTable = storage.playersTable or {}
     for _, player in pairs(game.players) do
