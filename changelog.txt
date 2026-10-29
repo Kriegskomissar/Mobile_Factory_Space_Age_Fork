@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.1.2
+Date: 2026-10-30
+  Bugfixes:
+    - Fixed Factorio 2.1 vanilla wall icon compatibility: the interior collision walls now use the current __base__/graphics/icons/wall.png asset path.
+    - Prevented the invisible interior wall prototypes from failing startup because of the obsolete stone-wall.png icon path.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.1.1
 Date: 2026-10-30
   Bugfixes:
