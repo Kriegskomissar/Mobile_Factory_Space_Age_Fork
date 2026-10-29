@@ -17,7 +17,6 @@ require("prototypes/entity/jump-charger.lua")
 require("prototypes/entity/temp-chest.lua")
 require("prototypes/entity/temp-tank.lua")
 require("prototypes/entity/mf-deploy.lua")
-require("prototypes/technology/control-center.lua")
 require("prototypes/gun/tank-guns.lua")
 require("prototypes/animation/MFTP.lua")
 
@@ -223,14 +222,7 @@ data.raw["gui-style"].default.MF_TPGUI_scroll_pan = mfScrollStyle(72)
 data.raw["gui-style"].default.MF_DA_scroll_pan = mfScrollStyle(58)
 data.raw["gui-style"].default.MF_JD_scroll_pan = mfScrollStyle(84)
 
-data.raw["gui-style"].default.MF_Button_Purple = {
-    type = "button_style",
-    parent = "shortcut_bar_button",
-    default_graphical_set = {base = {position = {346, 759}, corner_size = 8, tint = {150, 50, 160}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)},
-    hovered_graphical_set = {base = {position = {346, 759}, corner_size = 8, tint = {200, 120, 220}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5), glow = offset_by_2_default_glow({132, 177, 198, 127}, 0.5)},
-    clicked_graphical_set = {base = {position = {363, 759}, corner_size = 8, tint = {200, 120, 220}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}
-}
-
+data.raw["gui-style"].default.MF_Button_Purple = {type = "button_style", parent = "shortcut_bar_button", default_graphical_set = {base = {position = {346, 759}, corner_size = 8, tint = {150, 50, 160}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, hovered_graphical_set = {base = {position = {346, 759}, corner_size = 8, tint = {200, 120, 220}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5), glow = offset_by_2_default_glow({132, 177, 198, 127}, 0.5)}, clicked_graphical_set = {base = {position = {363, 759}, corner_size = 8, tint = {200, 120, 220}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
 data.raw["gui-style"].default.MF_Fake_Button_invisible = {type = "button_style", parent = "slot_sized_button", default_graphical_set = {base = {position = {312, 744}, corner_size = 8, tint = {0, 0, 0, 0}}, shadow = {}}, disabled_graphical_set = {base = {position = {312, 744}, corner_size = 8, tint = {0, 0, 0, 0}}, shadow = {}}, hovered_graphical_set = {base = {position = {312, 744}, corner_size = 8, tint = {0, 0, 0, 0}}, shadow = {}}, clicked_graphical_set = {base = {position = {312, 744}, corner_size = 8, tint = {0, 0, 0, 0}}, shadow = {}}}
 data.raw["gui-style"].default.MF_Button_Blue_GrayWhenDisabled = {type = "button_style", parent = "slot_sized_button", default_graphical_set = {base = {position = {312, 760}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, disabled_graphical_set = {base = {position = {329, 744}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, hovered_graphical_set = {base = {position = {346, 760}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5), glow = offset_by_2_default_glow({132, 177, 198, 127}, 0.5)}, clicked_graphical_set = {base = {position = {363, 760}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
 data.raw["gui-style"].default.MF_Fake_Button_Light_Blue = {type = "button_style", parent = "slot_sized_button", default_graphical_set = {base = {position = {363, 760}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, disabled_graphical_set = {base = {position = {329, 744}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, hovered_graphical_set = {base = {position = {363, 760}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, clicked_graphical_set = {base = {position = {363, 760}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
