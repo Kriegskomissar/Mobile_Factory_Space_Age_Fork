@@ -238,6 +238,12 @@ function setPlayerVariable(playerName, variable, value)
     MFPlayer.varTable[variable] = value
 end
 
+local FACTORY_NAMES = {
+    SmallFactory = true,
+    SuperFactory = true,
+    MegaFactory = true
+}
+
 function findMF(player)
     if player == nil then return nil end
 
@@ -245,7 +251,7 @@ function findMF(player)
     local count = 0
     for _, surface in pairs(game.surfaces) do
         for _, entity in pairs(surface.find_entities_filtered{type = "car"}) do
-            if entity.valid and string.match(entity.name, "MobileFactory") and entity.last_user ~= nil and entity.last_user.name == player.name then
+            if entity.valid and FACTORY_NAMES[entity.name] and entity.last_user ~= nil and entity.last_user.name == player.name then
                 count = count + 1
                 found = entity
             end
@@ -306,8 +312,8 @@ function addMobileFactory(player)
     local inv = player.get_main_inventory()
     if inv == nil then return end
 
-    if inv.can_insert{name = "MobileFactory"} then
-        inv.insert{name = "MobileFactory", count = 1}
+    if inv.can_insert{name = "SmallFactory"} then
+        inv.insert{name = "SmallFactory", count = 1}
         player.print({"", {"gui-description.MFInsertedInsideInventory"}})
     else
         player.print({"", {"gui-description.MFNotInsertedInsideInventory"}})
