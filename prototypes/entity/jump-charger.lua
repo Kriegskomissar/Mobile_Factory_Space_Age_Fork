@@ -74,7 +74,11 @@ data:extend{
                 {"space-science-pack", 1}
             }
         },
-        prerequisites = {"JumpDrive"},
+        -- The technology graph gate is the vanilla Personal Battery equipment.
+        -- The Jump Charger does not require Jump Drive research as a graph
+        -- prerequisite; it is independently available once personal battery
+        -- equipment has been researched.
+        prerequisites = {"battery-equipment"},
         effects = {{
             type = "unlock-recipe",
             recipe = "JumpCharger"
