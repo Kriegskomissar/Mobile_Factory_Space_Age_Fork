@@ -27,23 +27,24 @@ function GUI.guiOpened(event)
             return true
         end
     end
-
     return false
 end
 
 function GUI.guiClosed(event)
+    local player = game.players[event.player_index]
+    if player == nil or not player.valid then return false end
+    local gui = player.gui.screen["MFInteriorTerminalGUI"]
+    if gui and gui.valid then gui.destroy() end
     return false
 end
 
 function GUI.buttonClicked(event)
     local player = game.players[event.player_index]
     if player == nil or not player.valid or event.element == nil or not event.element.valid then return false end
-
     local name = event.element.name
     if string.sub(name, 1, 11) == "MFInterior." then
         return MFInterior.handleGuiClick(event)
     end
-
     return false
 end
 
