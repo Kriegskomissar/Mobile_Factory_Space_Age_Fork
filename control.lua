@@ -11,7 +11,6 @@ require("scripts/objects/mobile-factory.lua")
 require("scripts/objects/jump-drive.lua")
 require("scripts/objects/jump-markers.lua")
 require("scripts/objects/jump-marker-events.lua")
-require("scripts/objects/jump-charger.lua")
 require("scripts/objects/MFPlayer.lua")
 
 -- When the mod initializes.
@@ -44,7 +43,6 @@ function onInit()
         end
     end
 
-    -- The old tile/product bootstrap was removed with the legacy factory systems.
     rendering.clear("Mobile_Factories_Onboard_Production")
 
     storage.playersTable = storage.playersTable or {}
@@ -165,7 +163,7 @@ function onButtonClicked(event)
         return
     end
     if mfCall(GUI.buttonClicked, event) == true then
-        player.print({"gui-description.updatingGUI_Failed"})
+        if player then player.print({"gui-description.updatingGUI_Failed"}) end
         mfCall(Event.clearGUI, event)
     end
 end
