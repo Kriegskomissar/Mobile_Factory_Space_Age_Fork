@@ -58,7 +58,7 @@ data:extend{inventoryWall}
 local reactorShell = table.deepcopy(data.raw.reactor["nuclear-reactor"])
 reactorShell.name = "mf-energy-core-reactor-shell"
 reactorShell.type = "simple-entity-with-owner"
-reactorShell.flags = {"placeable-off-grid", "not-deconstructable", "not-blueprintable", "not-upgradable", "not-repairable"}
+reactorShell.flags = nil
 reactorShell.minable = nil
 reactorShell.destructible = false
 reactorShell.selectable_in_game = false
