@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.4
+Date: 2026-10-29
+  Cleanup:
+    - Removed the obsolete Control Center technology branch.
+    - Removed ConstructibleArea1 and ConstructibleArea2, which were only chained from the obsolete ControlCenter technology.
+    - Removed the obsolete control-center technology prototype from the data stage.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.0.3
 Date: 2026-10-29
   Bugfixes:
@@ -38,8 +46,3 @@ Date: 2026-10-29
     - This release is intended for a fresh game and is not a save-compatible update of the previous Mobile Factory Space Age package.
 
 ---------------------------------------------------------------------------------------------------
-Version: 1.0.7
-Date: 2026-10-25
-  Bugfixes:
-    - Fixed client startup failure caused by the Crystallizer using obsolete assembling-machine-2 shadow sprite dimensions.
-    - Load the shadow dimensions and offset from Factorio 2.1's official sprite metadata and repeat its static frame across the existing 32-frame Crystallizer animation.
