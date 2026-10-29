@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.1
+Date: 2026-10-29
+  Bugfixes:
+    - Fixed the Small Factory tank turret shadow spritesheet definition for Factorio 2.1.
+    - Added the missing line_length = 8 so the 64-direction shadow spritesheet stays within Factorio's 8192 px maximum spritesheet height.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.0.0
 Date: 2026-10-29
   Major Features:
