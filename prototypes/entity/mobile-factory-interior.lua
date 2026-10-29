@@ -19,11 +19,40 @@ terminal.max_speed = 0.01
 terminal.braking_power = "1000MW"
 terminal.rotation_speed = 0.01 / 60
 terminal.acceleration_per_sec = 0
-terminal.tank_driving = false
+t erminal.tank_driving = false
 terminal.collision_box = {{-0.8, -1.1}, {0.8, 1.1}}
 terminal.selection_box = {{-1.2, -1.4}, {1.2, 1.4}}
 terminal.map_color = {0.25, 0.25, 0.25}
 data:extend{terminal}
+
+-- Invisible collision walls keep the interior a finite room. The visible
+-- boundary is made from hazard-concrete tiles by the runtime builder.
+local wallPicture = {filename = "__core__/graphics/empty.png", width = 1, height = 1, frame_count = 1}
+
+data:extend{
+    {
+        type = "simple-entity",
+        name = "mf-interior-wall-horizontal",
+        icon = "__base__/graphics/icons/stone-wall.png",
+        flags = {"placeable-off-grid", "not-deconstructable", "not-blueprintable", "not-upgradable", "not-repairable"},
+        selectable_in_game = false,
+        collision_mask = {layers = {player = true, car = true, is_object = true}},
+        collision_box = {{-100, -0.5}, {100, 0.5}},
+        selection_box = {{0, 0}, {0, 0}},
+        picture = wallPicture
+    },
+    {
+        type = "simple-entity",
+        name = "mf-interior-wall-vertical",
+        icon = "__base__/graphics/icons/stone-wall.png",
+        flags = {"placeable-off-grid", "not-deconstructable", "not-blueprintable", "not-upgradable", "not-repairable"},
+        selectable_in_game = false,
+        collision_mask = {layers = {player = true, car = true, is_object = true}},
+        collision_box = {{-0.5, -100}, {0.5, 100}},
+        selection_box = {{0, 0}, {0, 0}},
+        picture = wallPicture
+    }
+}
 
 -- This is the only electrical connection point for the factory interior.
 local power = table.deepcopy(data.raw["electric-pole"].substation)
@@ -53,8 +82,8 @@ local inventoryWall = {
 data:extend{inventoryWall}
 
 -- Mega Factory energy core. The visible shell reuses the vanilla nuclear
--- reactor graphics; the actual power conversion is a direct nuclear-fuel ->
--- electricity burner-generator, with no heat or steam loop.
+-- reactor graphics; the actual power conversion is direct nuclear-fuel ->
+-- electricity with no heat or steam loop.
 local reactorShell = table.deepcopy(data.raw.reactor["nuclear-reactor"])
 reactorShell.name = "mf-energy-core-reactor-shell"
 reactorShell.type = "simple-entity-with-owner"
@@ -103,7 +132,6 @@ local coreGenerator = {
 }
 data:extend{coreGenerator}
 
--- Vanilla accumulator, enlarged to reactor footprint, with a 100 MJ buffer.
 local coreAccumulator = table.deepcopy(data.raw.accumulator.accumulator)
 coreAccumulator.name = "mf-energy-core-accumulator"
 coreAccumulator.icon = "__base__/graphics/icons/accumulator.png"
