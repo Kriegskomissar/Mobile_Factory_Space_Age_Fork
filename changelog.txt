@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.8
+Date: 2026-10-29
+  Bugfixes:
+    - Removed the stale require for the deleted mobile-factory-interior-multi.lua module.
+  Metadata:
+    - Set the mod author to jairo_antonio.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.0.7
 Date: 2026-10-29
   Bugfixes:
