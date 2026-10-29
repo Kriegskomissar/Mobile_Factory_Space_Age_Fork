@@ -20,7 +20,8 @@ setFactoryResistances(data.raw.car.SmallFactory, 10)
 data.raw.car.SmallFactory.equipment_grid = "MFEquipmentGrid-Small"
 
 -- Super Factory: twice the mass, deliberately lower power-to-weight ratio and
--- slower steering. Collision masks/physics are inherited from Small Factory.
+-- slower steering. Keep the native braking/friction forces so the extra mass
+-- produces real inertia rather than a custom movement model.
 createNewMF(
     "SuperFactory",
     {0.55, 0.80, 1.0},
@@ -30,7 +31,9 @@ createNewMF(
 )
 data.raw.car.SuperFactory.consumption = "900kW"
 data.raw.car.SuperFactory.effectivity = 1
-data.raw.car.SuperFactory.braking_power = "750kW"
+data.raw.car.SuperFactory.braking_force = data.raw.car.SmallFactory.braking_force
+data.raw.car.SuperFactory.friction_force = data.raw.car.SmallFactory.friction_force
+data.raw.car.SuperFactory.max_speed = data.raw.car.SmallFactory.max_speed * 0.90
 data.raw.car.SuperFactory.rotation_speed = 0.20 / 60
 data.raw.car.SuperFactory.turret_rotation_speed = 0.40 / 60
 data.raw.car.SuperFactory.turret_return_timeout = 120
@@ -58,7 +61,9 @@ createNewMF(
 )
 data.raw.car.MegaFactory.consumption = "1000kW"
 data.raw.car.MegaFactory.effectivity = 1
-data.raw.car.MegaFactory.braking_power = "900kW"
+data.raw.car.MegaFactory.braking_force = data.raw.car.SmallFactory.braking_force
+data.raw.car.MegaFactory.friction_force = data.raw.car.SmallFactory.friction_force
+data.raw.car.MegaFactory.max_speed = data.raw.car.SmallFactory.max_speed * 0.70
 data.raw.car.MegaFactory.rotation_speed = 0.10 / 60
 data.raw.car.MegaFactory.turret_rotation_speed = 0.25 / 60
 data.raw.car.MegaFactory.turret_return_timeout = 180
