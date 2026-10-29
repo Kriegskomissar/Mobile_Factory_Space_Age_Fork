@@ -1,8 +1,5 @@
 -- MOBILE FACTORY INTERIOR PROTOTYPES ----------------------------------------
 
--- A real car is used as the interior terminal so Factorio's native Enter key
--- and driving events can be reused. Runtime code immediately transfers the
--- driver to the Mobile Factory, so the car never becomes a second vehicle.
 local terminal = table.deepcopy(data.raw.car.car)
 terminal.name = "mf-interior-terminal-car"
 terminal.icon = "__base__/graphics/icons/car.png"
@@ -28,9 +25,6 @@ terminal.selection_box = {{-1.2, -1.4}, {1.2, 1.4}}
 terminal.map_color = {0.25, 0.25, 0.25}
 data:extend{terminal}
 
--- This is the visible Factorissimo-style connection point. Its supply area
--- covers the entire interior even for the 60x60 Mega floor, while its circuit
--- connectors can be linked to the interior pole across surfaces by script.
 local power = table.deepcopy(data.raw["electric-pole"].substation)
 power.name = "mf-interior-power-interface"
 power.icon = "__base__/graphics/icons/substation.png"
@@ -44,8 +38,6 @@ power.auto_connect_up_to_n_wires = 0
 power.selection_priority = 200
 data:extend{power}
 
--- Hidden energy buffers form the actual cross-surface electrical bridge. The
--- visible poles remain normal circuit/power connection points for the player.
 local energy = {
     type = "electric-energy-interface",
     name = "mf-interior-energy-interface",
@@ -55,15 +47,30 @@ local energy = {
     selectable_in_game = false,
     collision_box = {{-0.5, -0.5}, {0.5, 0.5}},
     selection_box = {{-0.5, -0.5}, {0.5, 0.5}},
-    energy_source = {
-        type = "electric",
-        buffer_capacity = "10GJ",
-        usage_priority = "tertiary",
-        input_flow_limit = "100MW",
-        output_flow_limit = "100MW"
-    },
+    energy_source = {type="electric", buffer_capacity="10GJ", usage_priority="tertiary", input_flow_limit="100MW", output_flow_limit="100MW"},
     energy_production = "0W",
     energy_usage = "0W",
-    picture = {filename = "__core__/graphics/empty.png", width = 1, height = 1}
+    picture = {filename="__core__/graphics/empty.png", width=1, height=1}
 }
 data:extend{energy}
+
+-- Decorative inventory wall: the perimeter is literally rendered as a
+-- continuous line of steel chests, representing the Mobile Factory inventory.
+local inventoryWall = {
+    type = "simple-entity",
+    name = "mf-interior-inventory-wall",
+    icon = "__base__/graphics/icons/steel-chest.png",
+    flags = {"placeable-off-grid", "not-deconstructable", "not-blueprintable", "not-upgradable", "not-repairable"},
+    selectable_in_game = false,
+    collision_box = {{0,0},{0,0}},
+    selection_box = {{0,0},{0,0}},
+    render_layer = "object",
+    picture = {
+        filename = "__base__/graphics/entity/steel-chest/steel-chest.png",
+        priority = "extra-high",
+        width = 48,
+        height = 34,
+        shift = {0.2, 0}
+    }
+}
+data:extend{inventoryWall}
