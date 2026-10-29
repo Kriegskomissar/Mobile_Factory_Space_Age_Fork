@@ -1,7 +1,6 @@
 -------------- SURFACES UTILITIES -------------------
 
 require("scripts/objects/mobile-factory-interior.lua")
-require("scripts/objects/mobile-factory-interior-multi.lua")
 require("scripts/objects/mobile-factory-interior-decor.lua")
 
 function createMFSurface(MF)
