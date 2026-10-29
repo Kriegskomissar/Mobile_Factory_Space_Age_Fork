@@ -26,7 +26,7 @@ data:extend{
     {
         type = "item-group",
         name = "MobileFactory",
-        icon = "__Mobile_Factory_Space_Age__/graphics/icons/MFIcon.png",
+        icon = "__Mobile_Factories_Onboard_Production__/graphics/icons/MFIcon.png",
         icon_size = 32,
         order = "x"
     }
@@ -84,7 +84,7 @@ local sprites = {
 
 for _, sprite in pairs(sprites) do
     sprite.type = "sprite"
-    sprite.filename = "__Mobile_Factory_Space_Age__/" .. sprite.filename
+    sprite.filename = "__Mobile_Factories_Onboard_Production__/" .. sprite.filename
     sprite.flags = {"icon"}
     data:extend{sprite}
 end
@@ -93,7 +93,7 @@ data:extend{
     {
         type = "sprite",
         name = "MFDeployE",
-        filename = "__Mobile_Factory_Space_Age__/graphics/icons/MobileFactoryE.png",
+        filename = "__Mobile_Factories_Onboard_Production__/graphics/icons/MobileFactoryE.png",
         width = 400,
         height = 600,
         flags = {"icon"}
@@ -106,21 +106,21 @@ data:extend{
         type = "sound",
         name = "MFEnter",
         category = "game-effect",
-        filename = "__Mobile_Factory_Space_Age__/sounds/EnterMF.ogg",
+        filename = "__Mobile_Factories_Onboard_Production__/sounds/EnterMF.ogg",
         preload = true
     },
     {
         type = "sound",
         name = "MFLeave",
         category = "game-effect",
-        filename = "__Mobile_Factory_Space_Age__/sounds/LeaveMF.ogg",
+        filename = "__Mobile_Factories_Onboard_Production__/sounds/LeaveMF.ogg",
         preload = true
     },
     {
         type = "sound",
         name = "MFSimpleTP",
         category = "game-effect",
-        filename = "__Mobile_Factory_Space_Age__/sounds/SimpleTP.ogg",
+        filename = "__Mobile_Factories_Onboard_Production__/sounds/SimpleTP.ogg",
         preload = true
     }
 }
@@ -241,6 +241,6 @@ data.raw["gui-style"].default.MF_Fake_Button_Purple = {type = "button_style", pa
 data.raw["gui-style"].default.filter_group_tab_selectable = {type = "button_style", parent = "filter_group_button_tab_slightly_larger", disabled_graphical_set = {base = {position = {363, 744}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
 data.raw["gui-style"].default.MFFrame1 = {type = "frame_style", graphical_set = {}, border = border_image_set(), right_padding = 4, use_header_filler = false, title_style = {type = "label_style", parent = "caption_label"}}
 data.raw["gui-style"].default.MFFrame2 = {type = "frame_style", graphical_set = {base = {position = {17, 0}, corner_size = 8, draw_type = "outer", shadow = {}}, shadow = default_inner_shadow}}
-data.raw["gui-style"].default.MF_Options_Frame = {type = "frame_style", graphical_set = {base = {position = {136, 0}, corner_size = 8, draw_type = "outer", shadow = {}}, shadow = default_inner_shadow}, border = border_image_set(), right_padding = 4, use_header_filler = false, title_style = {type = "label_style", parent = "caption_label"}}
+data.raw["gui-style"].default.MF_Options_Frame = {type = "frame_style", graphical_set = {base = {position = {136, 0}, corner_size = 8, draw_type = "outer', shadow = {}}, shadow = default_inner_shadow}, border = border_image_set(), right_padding = 4, use_header_filler = false, title_style = {type = "label_style", parent = "caption_label"}}
 data.raw["gui-style"].default.MF_Options_Tabbed_Pane = {type = "tabbed_pane_style", vertical_spacing = 0, padding = 0, tab_content_frame = {type = "frame_style", parent = "invisible_frame"}, tab_container = {type = "table_style", left_padding = 12, right_padding = 12, horizontal_spacing = 0}}
 data.raw["gui-style"].default.MF_Yellow_Label = {type = "label_style", font = "default", font_color = _mfYellow}
