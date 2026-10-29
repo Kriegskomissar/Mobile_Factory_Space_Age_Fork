@@ -1,4 +1,15 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.11
+Date: 2026-10-29
+  Cleanup:
+    - Finalized removal of legacy runtime paths: old player teleport helpers, legacy GUI modules, obsolete remote and Control Center code, and stale Jump Charger runtime code.
+    - GUI state is kept outside persistent storage and rebuilt after load.
+  Bugfixes:
+    - Updated current factory detection and deployment handling for SmallFactory, SuperFactory and MegaFactory.
+    - Kept the active runtime call wrapper after removing the legacy extension module.
+    - Removed stale Control Center placement restrictions and legacy technology callbacks.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.0.10
 Date: 2026-10-29
   Cleanup:
