@@ -13,7 +13,15 @@ require("scripts/objects/jump-markers.lua")
 require("scripts/objects/jump-marker-events.lua")
 require("scripts/objects/MFPlayer.lua")
 
--- When the mod initializes.
+-- Runtime modules historically used mfCall to turn an exception into a
+-- boolean failure result. Keep that small wrapper here now that the legacy
+-- extension module is gone.
+function mfCall(fn, ...)
+    if fn == nil then return true end
+    local ok = pcall(fn, ...)
+    return not ok
+end
+
 function onInit()
     storage.allowMigration = (next(storage) ~= nil)
 
