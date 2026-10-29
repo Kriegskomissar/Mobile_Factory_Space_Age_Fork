@@ -8,6 +8,7 @@ require("scripts/GUI/gui.lua")
 require("scripts/game-update.lua")
 require("scripts/events.lua")
 require("scripts/objects/mobile-factory.lua")
+require("scripts/objects/mobile-factory-interior-migration.lua")
 require("scripts/objects/jump-drive.lua")
 require("scripts/objects/jump-markers.lua")
 require("scripts/objects/jump-marker-events.lua")
@@ -27,8 +28,6 @@ local function migrateFactoryTable()
     storage.entsTable = storage.entsTable or {}
     storage.playersTable = storage.playersTable or {}
 
-    -- Versions before 1.1.0 stored one MF object under the player's name.
-    -- Re-key every surviving object by its actual entity unit_number.
     local legacy = {}
     for key, MF in pairs(storage.MFTable) do
         if type(key) == "string" then table.insert(legacy, {key = key, MF = MF}) end
@@ -49,7 +48,9 @@ local function migrateFactoryTable()
 end
 
 function onInit()
-    storage.allowMigration = (next(storage) ~= nil)
+    local hadSaveData = next(storage) ~= nil
+
+    storage.allowMigration = hadSaveData
     storage.entsTable = storage.entsTable or {}
     storage.upsysTickTable = storage.upsysTickTable or {}
     storage.entsUpPerTick = storage.entsUpPerTick or 10
@@ -70,9 +71,15 @@ function onInit()
     for _, MF in pairs(storage.MFTable or {}) do
         if type(MF) == "table" and MF.ent and MF.ent.valid then
             MF:refresh()
-            if MF.fS == nil or not MF.fS.valid then MFInterior.create(MF) end
+            if hadSaveData and MF.fS and MF.fS.valid then
+                MFInterior.rebuildForV11(MF)
+            elseif MF.fS == nil or not MF.fS.valid then
+                MFInterior.create(MF)
+            end
             if MF.playerIndex and game.players[MF.playerIndex] then
-                storage.playersTable[game.players[MF.playerIndex].name].currentMF = MF
+                local playerName = game.players[MF.playerIndex].name
+                storage.playersTable[playerName] = storage.playersTable[playerName] or MFP:new(game.players[MF.playerIndex])
+                storage.playersTable[playerName].currentMF = MF
             end
         end
     end
@@ -119,9 +126,7 @@ _mfEntityFilterWithCBJ = {
 function initAPlayer(event)
     if mfCall(Event.initPlayer, event) == true then
         local player = event.player_index and game.players[event.player_index]
-        if player and player.name then
-            game.print({"gui-description.initAPlayer_PlayerInitFailed", player.name})
-        end
+        if player and player.name then game.print({"gui-description.initAPlayer_PlayerInitFailed", player.name}) end
     end
 end
 
