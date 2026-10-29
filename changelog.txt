@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 1.0.3
+Date: 2026-10-29
+  Bugfixes:
+    - Fixed the MFDeploy technology prerequisite after the standalone mod technology-tree rename.
+    - MFDeploy now correctly requires the Small Factory technology instead of the removed MobileFactory technology.
+
+---------------------------------------------------------------------------------------------------
 Version: 1.0.2
 Date: 2026-10-29
   Bugfixes:
