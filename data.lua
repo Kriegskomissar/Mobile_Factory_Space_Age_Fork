@@ -50,15 +50,31 @@ data:extend{
 }
 
 ------------------ EQUIPMENT GRIDS ------------------
+-- The three tiers have intentionally different grid sizes. The factory's own
+-- Jump Drive/Charger category is included alongside normal armor equipment.
 local equipments = {"armor", "mfEquipments"}
 
 data:extend{
     {
         type = "equipment-grid",
         equipment_categories = equipments,
-        name = "MFEquipmentGrid",
-        height = 30,
-        width = 30
+        name = "MFEquipmentGrid-Small",
+        height = 10,
+        width = 10
+    },
+    {
+        type = "equipment-grid",
+        equipment_categories = equipments,
+        name = "MFEquipmentGrid-Super",
+        height = 15,
+        width = 15
+    },
+    {
+        type = "equipment-grid",
+        equipment_categories = equipments,
+        name = "MFEquipmentGrid-Mega",
+        height = 20,
+        width = 20
     }
 }
 
@@ -188,8 +204,7 @@ data.raw["gui-style"].default.MF_Options_scroll_pan = {
     type = "scroll_pane_style",
     extra_padding_when_activated = 0,
     graphical_set = {position = {136, 0}, corner_size = 8, shadow = {}},
-    background_graphical_set = {position = {136, 0}, corner_size = 8},
-    vertical_scrollbar_style = {type = "vertical_scrollbar_style"}
+    background_graphical_set = {position = {136, 0}, corner_size = 8}
 }
 
 local function mfScrollStyle(verticalSize)
@@ -221,16 +236,15 @@ data.raw["gui-style"].default.MF_SwtichGUI_scroll_pan = mfScrollStyle(58)
 data.raw["gui-style"].default.MF_TPGUI_scroll_pan = mfScrollStyle(72)
 data.raw["gui-style"].default.MF_DA_scroll_pan = mfScrollStyle(58)
 data.raw["gui-style"].default.MF_JD_scroll_pan = mfScrollStyle(84)
-
-data.raw["gui-style"].default.MF_Button_Purple = {type = "button_style", parent = "shortcut_bar_button", default_graphical_set = {base = {position = {346, 759}, corner_size = 8, tint = {150, 50, 160}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, hovered_graphical_set = {base = {position = {346, 759}, corner_size = 8, tint = {200, 120, 220}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5), glow = offset_by_2_default_glow({132, 177, 198, 127}, 0.5)}, clicked_graphical_set = {base = {position = {363, 759}, corner_size = 8, tint = {200, 120, 220}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
-data.raw["gui-style"].default.MF_Fake_Button_invisible = {type = "button_style", parent = "slot_sized_button", default_graphical_set = {base = {position = {312, 744}, corner_size = 8, tint = {0, 0, 0, 0}}, shadow = {}}, disabled_graphical_set = {base = {position = {312, 744}, corner_size = 8, tint = {0, 0, 0, 0}}, shadow = {}}, hovered_graphical_set = {base = {position = {312, 744}, corner_size = 8, tint = {0, 0, 0, 0}}, shadow = {}}, clicked_graphical_set = {base = {position = {312, 744}, corner_size = 8, tint = {0, 0, 0, 0}}, shadow = {}}}
-data.raw["gui-style"].default.MF_Button_Blue_GrayWhenDisabled = {type = "button_style", parent = "slot_sized_button", default_graphical_set = {base = {position = {312, 760}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, disabled_graphical_set = {base = {position = {329, 744}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, hovered_graphical_set = {base = {position = {346, 760}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5), glow = offset_by_2_default_glow({132, 177, 198, 127}, 0.5)}, clicked_graphical_set = {base = {position = {363, 760}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
-data.raw["gui-style"].default.MF_Fake_Button_Light_Blue = {type = "button_style", parent = "slot_sized_button", default_graphical_set = {base = {position = {363, 760}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, disabled_graphical_set = {base = {position = {329, 744}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, hovered_graphical_set = {base = {position = {363, 760}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, clicked_graphical_set = {base = {position = {363, 760}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
-data.raw["gui-style"].default.MF_Fake_Button_Blue = {type = "button_style", parent = "shortcut_bar_button", default_graphical_set = {base = {position = {312, 759}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, hovered_graphical_set = {base = {position = {312, 759}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, clicked_graphical_set = {base = {position = {312, 759}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
-data.raw["gui-style"].default.MF_Fake_Button_Green = {type = "button_style", parent = "shortcut_bar_button", default_graphical_set = {base = {position = {312, 792}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, hovered_graphical_set = {base = {position = {312, 792}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, clicked_graphical_set = {base = {position = {312, 792}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
-data.raw["gui-style"].default.MF_Fake_Button_Red = {type = "button_style", parent = "shortcut_bar_button", default_graphical_set = {base = {position = {312, 776}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, hovered_graphical_set = {base = {position = {312, 776}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, clicked_graphical_set = {base = {position = {312, 776}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
-data.raw["gui-style"].default.MF_Fake_Button_Purple = {type = "button_style", parent = "shortcut_bar_button", default_graphical_set = {base = {position = {346, 759}, corner_size = 8, tint = {150, 50, 160}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, hovered_graphical_set = {base = {position = {346, 759}, corner_size = 8, tint = {150, 50, 160}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, clicked_graphical_set = {base = {position = {346, 759}, corner_size = 8, tint = {150, 50, 160}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
-data.raw["gui-style"].default.filter_group_tab_selectable = {type = "button_style", parent = "filter_group_button_tab_slightly_larger", disabled_graphical_set = {base = {position = {363, 744}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
+data.raw["gui-style"].default.MF_Button_Purple = {type = "button_style", parent = "shortcut_bar_button", default_graphical_set = {base = {position = {346, 759}, corner_size = 8, tint = {150, 50, 160}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, hovered_graphical_set = {base = {position = {346, 759}, corner_size = 8, tint = {200, 120, 220}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}, clicked_graphical_set = {base = {position = {363, 759}, corner_size = 8, tint = {200, 120, 220}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
+data.raw["gui-style"].default.MF_Fake_Button_invisible = {type = "button_style", parent = "slot_sized_button", default_graphical_set = {base = {position = {312, 744}, corner_size = 8, tint = {0, 0, 0, 0}}, shadow = {}}}
+data.raw["gui-style"].default.MF_Button_Blue_GrayWhenDisabled = {type = "button_style", parent = "slot_sized_button", default_graphical_set = {base = {position = {312, 760}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
+data.raw["gui-style"].default.MF_Fake_Button_Light_Blue = {type = "button_style", parent = "slot_sized_button", default_graphical_set = {base = {position = {363, 760}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
+data.raw["gui-style"].default.MF_Fake_Button_Blue = {type = "button_style", parent = "shortcut_bar_button", default_graphical_set = {base = {position = {312, 759}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
+data.raw["gui-style"].default.MF_Fake_Button_Green = {type = "button_style", parent = "shortcut_bar_button", default_graphical_set = {base = {position = {312, 792}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
+data.raw["gui-style"].default.MF_Fake_Button_Red = {type = "button_style", parent = "shortcut_bar_button", default_graphical_set = {base = {position = {312, 776}, corner_size = 8}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
+data.raw["gui-style"].default.MF_Fake_Button_Purple = {type = "button_style", parent = "shortcut_bar_button", default_graphical_set = {base = {position = {346, 759}, corner_size = 8, tint = {150, 50, 160}}, shadow = offset_by_2_default_glow(default_dirt_color, 0.5)}}
+data.raw["gui-style"].default.filter_group_tab_selectable = {type = "button_style", parent = "filter_group_button_tab_slightly_larger"}
 data.raw["gui-style"].default.MFFrame1 = {type = "frame_style", graphical_set = {}, border = border_image_set(), right_padding = 4, use_header_filler = false, title_style = {type = "label_style", parent = "caption_label"}}
 data.raw["gui-style"].default.MFFrame2 = {type = "frame_style", graphical_set = {base = {position = {17, 0}, corner_size = 8, draw_type = "outer", shadow = {}}, shadow = default_inner_shadow}}
 data.raw["gui-style"].default.MF_Options_Frame = {type = "frame_style", graphical_set = {base = {position = {136, 0}, corner_size = 8, draw_type = "outer", shadow = {}}, shadow = default_inner_shadow}, border = border_image_set(), right_padding = 4, use_header_filler = false, title_style = {type = "label_style", parent = "caption_label"}}
